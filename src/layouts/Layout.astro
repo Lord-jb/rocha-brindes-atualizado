@@ -1,5 +1,4 @@
 ---
-// FILE: src/layouts/Layout.astro
 import "../styles/global.css";
 
 interface Props {
@@ -9,13 +8,9 @@ interface Props {
 }
 
 const {
-  // 🚀 SEO TÍTULO: Focado em alta intenção de compra
   title = "Rocha Brindes | Brindes Corporativos, Kits Executivos e Personalizados",
-  
-  // 🚀 SEO DESCRIÇÃO: Resumo atrativo com principais produtos e abrangência
   description = "Fabricante e fornecedor de brindes personalizados para empresas. Orçamento rápido em Canetas, Garrafas Térmicas, Agendas, Bonés e Kits Boas-Vindas. Atendemos todo o Brasil.",
-  
-  image = "/favicon-light.png" // Imagem padrão para compartilhamento
+  image = "/favicon-light.png"
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);

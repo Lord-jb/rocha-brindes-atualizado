@@ -1,4 +1,4 @@
-// FILE: src/shared/components/Header.tsx
+// src/shared/components/Header.tsx - ATUALIZAR
 import { ShoppingCart } from 'lucide-react'
 import { useCart } from '../../core/store/cart'
 import { useCatalog } from '../../core/hooks/useCatalog'
@@ -15,16 +15,18 @@ export default function Header() {
     <header className="sticky top-0 z-40 bg-white shadow-md border-b border-gray-100">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
-          {isLoading || !logoUrl ? (
-            <div className="h-10 sm:h-14 md:h-16 w-32 sm:w-48 md:w-64 bg-gray-200 animate-pulse rounded" />
-          ) : (
-            <img 
-              src={logoUrl} 
-              alt="Rocha Brindes" 
-              className="h-5 sm:h-7 md:h-9 w-auto object-contain" 
-              loading="eager"
-            />
-          )}
+          <a href="/" className="flex items-center">
+            {isLoading || !logoUrl ? (
+              <div className="h-10 sm:h-14 md:h-16 w-32 sm:w-48 md:w-64 bg-gray-200 animate-pulse rounded" />
+            ) : (
+              <img 
+                src={logoUrl} 
+                alt="Rocha Brindes" 
+                className="h-5 sm:h-7 md:h-9 w-auto object-contain" 
+                loading="eager"
+              />
+            )}
+          </a>
           
           <button 
             onClick={toggle} 

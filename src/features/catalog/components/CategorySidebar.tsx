@@ -1,4 +1,4 @@
-// src/features/catalog/components/CategorySidebar.tsx
+// FILE: src/features/catalog/components/CategorySidebar.tsx
 import { memo, useState } from 'react'
 import { Search, Grid, X, Filter } from 'lucide-react'
 
@@ -15,7 +15,6 @@ export default memo(function CategorySidebar({ categories, selected, onSelect, s
 
   return (
     <>
-      {/* Botão Mobile - Barra Fixa na Base */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-gray-200 shadow-2xl">
         <div className="container mx-auto px-4 py-3">
           <button
@@ -42,7 +41,6 @@ export default memo(function CategorySidebar({ categories, selected, onSelect, s
         </div>
       </div>
 
-      {/* Overlay */}
       <div
         className={`fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity duration-300 ${
           isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
@@ -50,7 +48,6 @@ export default memo(function CategorySidebar({ categories, selected, onSelect, s
         onClick={() => setIsOpen(false)}
       />
 
-      {/* Sidebar */}
       <aside className={`
         fixed lg:sticky bottom-0 lg:top-28 left-0 right-0 lg:left-auto lg:right-auto
         h-[85vh] lg:h-fit w-full lg:w-auto z-50 lg:z-auto
@@ -60,7 +57,6 @@ export default memo(function CategorySidebar({ categories, selected, onSelect, s
         rounded-t-3xl lg:rounded-none shadow-2xl lg:shadow-none
         bg-white lg:bg-transparent
       `}>
-        {/* Header Mobile */}
         <div className="lg:hidden bg-gradient-to-r from-primary to-primary-dark text-white p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Filter size={24} />
@@ -75,7 +71,6 @@ export default memo(function CategorySidebar({ categories, selected, onSelect, s
         </div>
 
         <div className="p-4 lg:p-0 space-y-6 overflow-y-auto max-h-[calc(85vh-180px)] lg:max-h-none">
-          {/* Campo de Busca */}
           <div className="bg-white rounded-2xl shadow-card p-4 lg:p-6">
             <div className="relative">
               <input
@@ -97,7 +92,6 @@ export default memo(function CategorySidebar({ categories, selected, onSelect, s
             </div>
           </div>
 
-          {/* Categorias */}
           <div className="bg-white rounded-2xl shadow-card p-4 lg:p-6">
             <div className="flex items-center gap-2 mb-5">
               <Grid className="text-primary" size={20} />
@@ -137,7 +131,6 @@ export default memo(function CategorySidebar({ categories, selected, onSelect, s
           </div>
         </div>
 
-        {/* Botões de Ação Mobile */}
         <div className="lg:hidden absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 space-y-2">
           {(selected !== 'Todos' || search) && (
             <button

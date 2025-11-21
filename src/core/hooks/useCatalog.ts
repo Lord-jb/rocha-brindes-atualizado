@@ -1,4 +1,4 @@
-// src/core/hooks/useCatalog.ts
+// FILE: src/core/hooks/useCatalog.ts
 import { useQuery } from '@tanstack/react-query'
 import { collection, getDocs, query, orderBy, limit, doc, getDoc } from 'firebase/firestore'
 import { db } from '../../core/lib/firebase'

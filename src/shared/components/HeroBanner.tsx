@@ -1,4 +1,4 @@
-// src/shared/components/HeroBanner.tsx
+// FILE: src/shared/components/HeroBanner.tsx
 import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { optimizeUrl } from '../utils/image'

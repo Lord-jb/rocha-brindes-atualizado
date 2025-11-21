@@ -1,4 +1,4 @@
-// src/features/catalog/components/ProductModal.tsx
+// FILE: src/features/catalog/components/ProductModal.tsx
 import { useState, useMemo, memo } from 'react'
 import { X, ShoppingCart, Plus, Minus, Package, Tag } from 'lucide-react'
 import { optimizeUrl } from '../../../shared/utils/image'
@@ -45,17 +45,16 @@ export default memo(function ProductModal({ product, onClose }: Props) {
     return items
   }, [product])
 
-  const [activeIndex, setActiveIndex] = useState(0)
-  const active = gallery[activeIndex] || gallery[0]
+const [activeIndex, setActiveIndex] = useState(0)
+const active = gallery[activeIndex] || gallery[0] || { label: 'Principal', url: product.imagem_url ? optimizeUrl(product.imagem_url, 'public') : '' }
 
-  const handleAdd = () => {
-    if (product.variacoes?.length && !selectedColor) {
+const handleAdd = () => {
+    const colorToUse = selectedColor || active?.variation?.cor || product.variacoes?.[0]?.cor
+    
+    if (product.variacoes?.length && !colorToUse) {
       alert('Selecione uma cor antes de adicionar ao orçamento')
       return
     }
-
-    const colorToUse = selectedColor || active?.variation?.cor
-
     for (let i = 0; i < quantity; i++) {
       add({ ...product, cor: colorToUse })
     }
@@ -78,7 +77,6 @@ export default memo(function ProductModal({ product, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="relative bg-white rounded-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden shadow-2xl flex flex-col">
-        {/* Botão Fechar */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full p-2.5 z-10 hover:bg-white shadow-lg transition-all"
@@ -87,7 +85,6 @@ export default memo(function ProductModal({ product, onClose }: Props) {
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 flex-1 overflow-hidden">
-          {/* Galeria de Imagens */}
           <div className="bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col max-h-[95vh]">
             <div className="flex-1 flex items-center justify-center overflow-hidden">
               {active && (
@@ -100,7 +97,6 @@ export default memo(function ProductModal({ product, onClose }: Props) {
               )}
             </div>
 
-            {/* Miniaturas */}
             {gallery.length > 1 && (
               <div className="border-t border-gray-200 bg-white/80 backdrop-blur-sm px-4 py-3 flex gap-2 overflow-x-auto flex-shrink-0">
                 {gallery.map((item, idx) => (
@@ -134,10 +130,8 @@ export default memo(function ProductModal({ product, onClose }: Props) {
             )}
           </div>
 
-          {/* Informações do Produto */}
           <div className="flex flex-col overflow-hidden">
             <div className="flex-1 overflow-y-auto p-6 md:p-8 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-              {/* Header */}
               <div className="mb-6">
                 <div className="flex items-start gap-3 mb-3">
                   <div className="p-2 bg-primary/10 rounded-xl flex-shrink-0">
@@ -154,7 +148,6 @@ export default memo(function ProductModal({ product, onClose }: Props) {
                   </div>
                 </div>
 
-                {/* Categorias */}
                 {product.categorias?.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {product.categorias.map(cat => (
@@ -166,7 +159,6 @@ export default memo(function ProductModal({ product, onClose }: Props) {
                 )}
               </div>
 
-              {/* Descrição */}
               {product.descricao && (
                 <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
                   <p className="text-sm text-gray-700 whitespace-pre-line break-words leading-relaxed">
@@ -175,7 +167,6 @@ export default memo(function ProductModal({ product, onClose }: Props) {
                 </div>
               )}
 
-              {/* Seleção de Cores */}
               {product.variacoes?.length ? (
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-3">
@@ -222,7 +213,6 @@ export default memo(function ProductModal({ product, onClose }: Props) {
                 </div>
               ) : null}
 
-              {/* Quantidade */}
               <div className="mb-6">
                 <label className="block text-sm font-bold text-gray-900 mb-3">
                   Quantidade
@@ -259,7 +249,6 @@ export default memo(function ProductModal({ product, onClose }: Props) {
               </div>
             </div>
 
-            {/* Footer com Botões */}
             <div className="border-t border-gray-200 bg-white p-4 md:p-6 space-y-2.5 flex-shrink-0">
               <button
                 onClick={handleAdd}

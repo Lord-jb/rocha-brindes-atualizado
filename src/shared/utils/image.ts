@@ -1,4 +1,5 @@
-// src/shared/utils/image.ts
+// src/shared/utils/image.ts - CORRIGIR preload
+
 const CLOUDFLARE_ACCOUNT_HASH = 'iem94FVEkj3Qjv3DsJXpbQ'
 
 export function optimizeUrl(imageId: string, variant: 'public' | 'thumbnail' | 'original' = 'public'): string {
@@ -11,20 +12,26 @@ export function optimizeUrl(imageId: string, variant: 'public' | 'thumbnail' | '
 
 export function preloadImage(imageId: string, priority: 'high' | 'low' = 'high') {
   if (typeof window === 'undefined') return
+  if (!imageId) return
   
   const link = document.createElement('link')
   link.rel = 'preload'
   link.as = 'image'
+  link.fetchPriority = priority
   link.href = optimizeUrl(imageId, 'public')
+  
+  // Remove o preload após carregar para evitar o warning
+  link.onload = () => {
+    setTimeout(() => link.remove(), 100)
+  }
+  
   document.head.appendChild(link)
 }
 
+// Remover preload - não é necessário e causa warnings
 export function preloadCriticalImages(imageIds: string[]) {
-  if (typeof window === 'undefined') return
-  
-  imageIds.slice(0, 3).forEach((id, i) => {
-    if (id) preloadImage(id, i === 0 ? 'high' : 'low')
-  })
+  // Função vazia - preload será feito automaticamente pelo navegador
+  return
 }
 
 export function getImageDimensions(url: string): Promise<{ width: number; height: number }> {

@@ -1,4 +1,4 @@
-// src/shared/components/Footer.tsx
+// FILE: src/shared/components/Footer.tsx
 import { useState, useEffect } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../core/lib/firebase';
@@ -16,7 +16,6 @@ export default function Footer() {
     whatsappUrl: ''
   });
 
-  // Escuta as mudanças em tempo real do banco de dados
   useEffect(() => {
     const unsub = onSnapshot(doc(db, 'config', 'footer'), (doc) => {
       if (doc.exists()) {
@@ -31,7 +30,6 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           
-          {/* Coluna 1: Sobre */}
           <div>
             <h3 className="text-2xl font-title font-bold text-dark mb-4">
               Rocha Brindes
@@ -63,7 +61,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Coluna 2: Links Rápidos (Estáticos por enquanto, pois são do sistema) */}
           <div>
             <h4 className="font-bold text-lg mb-4 text-dark">Navegação</h4>
             <ul className="space-y-3 text-gray-600">
@@ -74,7 +71,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Coluna 3: Contato */}
           <div>
             <h4 className="font-bold text-lg mb-4 text-dark">Contato</h4>
             <ul className="space-y-4 text-gray-600">
@@ -98,7 +94,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Rodapé inferior */}
         <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
           <p>{data.copyright}</p>
           <p className="flex items-center gap-1">

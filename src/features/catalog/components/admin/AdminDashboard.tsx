@@ -1,4 +1,4 @@
-// src/features/catalog/components/admin/AdminDashboard.tsx
+// src/features/catalog/components/admin/AdminDashboard.tsx - ATUALIZAR
 import { useState } from 'react'
 import { signOut } from 'firebase/auth'
 import { auth } from '../../../../core/lib/firebase'
@@ -6,9 +6,10 @@ import ProductForm from '../../../../features/catalog/components/admin/ProductFo
 import ProductList from './ProductList'
 import CategoryManager from '../../../../features/catalog/components/admin/CategoryManager'
 import LayoutManager from '../../../../features/catalog/components/admin/LayoutManager'
+import LandingManager from '../../../../features/catalog/components/admin/LandingManager'
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'products' | 'categories' | 'layout' | 'config'>('products')
+  const [activeTab, setActiveTab] = useState<'products' | 'categories' | 'layout' | 'landing' | 'config'>('products')
 
   const handleLogout = async () => {
     await signOut(auth)
@@ -51,19 +52,19 @@ export default function AdminDashboard() {
             Categorias
           </button>
           <button
-            onClick={() => setActiveTab('layout')}
+            onClick={() => setActiveTab('landing')}
             className={`px-6 py-2 rounded-lg font-semibold transition-all whitespace-nowrap ${
-              activeTab === 'layout'
+              activeTab === 'landing'
                 ? 'bg-primary text-text-primary'
                 : 'bg-white text-gray-600 hover:bg-gray-100'
             }`}
           >
-            Layout
+            Landing Page
           </button>
           <button
-            onClick={() => setActiveTab('config')}
+            onClick={() => setActiveTab('layout')}
             className={`px-6 py-2 rounded-lg font-semibold transition-all whitespace-nowrap ${
-              activeTab === 'config'
+              activeTab === 'layout'
                 ? 'bg-primary text-text-primary'
                 : 'bg-white text-gray-600 hover:bg-gray-100'
             }`}
@@ -80,6 +81,8 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === 'categories' && <CategoryManager />}
+
+        {activeTab === 'landing' && <LandingManager />}
 
         {activeTab === 'layout' && <LayoutManager />}
       </div>

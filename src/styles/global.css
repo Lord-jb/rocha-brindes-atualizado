@@ -1,4 +1,4 @@
-/* src/styles/global.css */
+/* FILE: src/styles/global.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -31,7 +31,6 @@
     hyphens: auto;
   }
 
-  /* Scrollbar personalizada */
   .scrollbar-thin {
     scrollbar-width: thin;
   }
@@ -50,4 +49,23 @@
     width: 6px;
     height: 6px;
   }
+}
+
+/* src/styles/global.css - ADICIONAR ao final */
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 40s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
 }

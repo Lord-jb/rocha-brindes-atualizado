@@ -1,4 +1,4 @@
-// src/features/cart/CartSidebar.tsx - ajustes de responsividade
+// FILE: src/features/cart/CartSidebar.tsx
 import { useState, useEffect } from 'react'
 import { X, Trash2, Send, ShoppingCart, Plus, Minus } from 'lucide-react'
 import { doc, getDoc } from 'firebase/firestore'
@@ -68,20 +68,14 @@ export default function CartSidebar() {
       message += `\n*Observações:* ${formData.obs}`
     }
 
-// remove tudo que não for número
-const cleanNumber = whatsappNumber.replace(/\D/g, '')
+    const cleanNumber = whatsappNumber.replace(/\D/g, '')
+    const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message.trim())}`
 
-// WhatsApp Mobile odeia espaços e quebras no final.
-// trim() resolve
-const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message.trim())}`
-
-// iOS/Safari precisa de _self
-if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-  window.location.href = whatsappUrl
-} else {
-  window.open(whatsappUrl, '_blank')
-}
-
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      window.location.href = whatsappUrl
+    } else {
+      window.open(whatsappUrl, '_blank')
+    }
     
     clear()
     toggle()

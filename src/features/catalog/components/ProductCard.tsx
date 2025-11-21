@@ -1,4 +1,4 @@
-// src/features/catalog/components/ProductCard.tsx
+// FILE: src/features/catalog/components/ProductCard.tsx
 import { memo } from 'react'
 import { ShoppingCart, Eye } from 'lucide-react'
 import { optimizeUrl } from '../../../shared/utils/image'
@@ -66,4 +66,4 @@ export default memo(function ProductCard({ product, onView, onAdd }: Props) {
       </div>
     </article>
   )
-}) 
+})

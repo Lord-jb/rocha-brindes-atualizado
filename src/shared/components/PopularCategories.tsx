@@ -1,4 +1,4 @@
-// src/shared/components/PopularCategories.tsx
+// FILE: src/shared/components/PopularCategories.tsx
 import { memo } from 'react'
 import { optimizeUrl } from '../utils/image'
 import type { Category } from '../../types/product'
