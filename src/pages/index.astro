@@ -1,0 +1,65 @@
+---
+// FILE: src/pages/index.astro
+import Layout from '../layouts/Layout.astro';
+import Home from '../components/Home';
+
+// 🚀 SEO SCHEMA AVANÇADO: Organização + WebSite (Para Sitelinks Search Box)
+const schema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://rochabrindes.com/#organization",
+      "name": "Rocha Brindes",
+      "url": "https://rochabrindes.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://rochabrindes.com/favicon-light.png",
+        "width": 512,
+        "height": 512
+      },
+      "image": "https://rochabrindes.com/favicon-light.png",
+      "description": "Líder em brindes personalizados corporativos. Canetas, garrafas, kits executivos e tecnologia para sua empresa.",
+      "telephone": "+55-89-99433-3316",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "BR"
+      },
+      "priceRange": "$$",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+55-89-99433-3316",
+        "contactType": "sales",
+        "areaServed": "BR",
+        "availableLanguage": "Portuguese"
+      },
+      // Se tiver redes sociais, o Google vai conectar elas aqui
+      "sameAs": [
+        "https://instagram.com/rochabrindes",
+        "https://facebook.com/rochabrindes"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://rochabrindes.com/#website",
+      "url": "https://rochabrindes.com",
+      "name": "Rocha Brindes - Catálogo Oficial",
+      "publisher": {
+        "@id": "https://rochabrindes.com/#organization"
+      },
+      "inLanguage": "pt-BR",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://rochabrindes.com/?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+});
+---
+
+<Layout>
+  <script type="application/ld+json" set:html={schema} />
+  
+  <Home client:only="react" />
+</Layout>
