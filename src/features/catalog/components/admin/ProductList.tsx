@@ -7,7 +7,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '../../../../core/lib/firebase'
 import { deleteMultipleImages } from '../../../../core/lib/cloudflare'
-import { optimizeUrl } from '../../../../shared/utils/image'
+import { optimizeUrl } from '../../../../core/lib/cloudflare'
 import type { Product } from '../../../../types/product'
 import { Trash2, Edit, ChevronLeft, ChevronRight, Search } from 'lucide-react'
 import ProductEditModal from '../../../../features/catalog/components/admin/ProductEditModal'

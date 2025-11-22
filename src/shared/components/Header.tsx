@@ -2,7 +2,7 @@
 import { ShoppingBag } from 'lucide-react'
 import { useCart } from '../../core/store/cart'
 import { useCatalog } from '../../core/hooks/useCatalog'
-import { optimizeUrl } from '../../shared/utils/image'
+import { optimizeUrl } from '../../core/lib/cloudflare'
 
 export default function Header() {
   const { count, toggle } = useCart()

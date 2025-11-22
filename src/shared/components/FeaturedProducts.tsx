@@ -1,5 +1,5 @@
 // src/shared/components/FeaturedProducts.tsx
-import { optimizeUrl } from '../utils/image'
+import { optimizeUrl } from '../../core/lib/cloudflare'
 import type { Product } from '../../types/product'
 
 interface FeaturedProductsProps {

@@ -1,8 +1,10 @@
-// src/shared/components/InfoSection.tsx
+// FILE: src/shared/components/InfoSection.tsx
+import { optimizeUrl } from '../../core/lib/cloudflare'
+
 interface InfoSectionProps {
   title: string
   description: string
-  imageUrl?: string
+  imageUrl?: string // recebe imageId
   imagePosition?: 'left' | 'right'
   features?: string[]
 }
@@ -10,25 +12,31 @@ interface InfoSectionProps {
 export default function InfoSection({ 
   title, 
   description, 
-  imageUrl, 
+  imageUrl,
   imagePosition = 'right',
   features 
 }: InfoSectionProps) {
+
+  // SE vier imageId, transformamos na URL pública
+  const optimizedImage = imageUrl ? optimizeUrl(imageUrl, 'public') : null
+
   return (
     <section className="mb-16">
       <div className={`bg-white rounded-2xl shadow-card overflow-hidden ${
         imagePosition === 'left' ? 'md:flex-row-reverse' : ''
       }`}>
         <div className="grid md:grid-cols-2 gap-8 items-center">
+          
           {/* Conteúdo de Texto */}
           <div className={`p-8 md:p-12 ${imagePosition === 'left' ? 'md:order-2' : ''}`}>
             <h2 className="text-2xl md:text-3xl font-title font-bold text-dark mb-6">
               {title}
             </h2>
+
             <p className="text-gray-600 text-lg mb-6 leading-relaxed">
               {description}
             </p>
-            
+
             {features && features.length > 0 && (
               <ul className="space-y-3">
                 {features.map((feature, idx) => (
@@ -41,20 +49,21 @@ export default function InfoSection({
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
+
                     <span className="text-gray-700">{feature}</span>
                   </li>
                 ))}
               </ul>
             )}
           </div>
-          
-          {/* Imagem */}
+
+          {/* Imagem vinda do Cloudflare */}
           <div className={`relative h-64 md:h-full min-h-[400px] bg-gradient-to-br from-primary/10 to-accent/10 ${
             imagePosition === 'left' ? 'md:order-1' : ''
           }`}>
-            {imageUrl ? (
+            {optimizedImage ? (
               <img
-                src={imageUrl}
+                src={optimizedImage}
                 alt={title}
                 className="w-full h-full object-cover"
                 loading="lazy"
@@ -65,6 +74,7 @@ export default function InfoSection({
               </div>
             )}
           </div>
+
         </div>
       </div>
     </section>

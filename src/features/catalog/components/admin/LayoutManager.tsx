@@ -4,7 +4,7 @@ import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { uploadToCloudflare, optimizeUrl, deleteCloudflareImage } from '../../../../core/lib/cloudflare'
 import { db } from '../../../../core/lib/firebase'
 import { Upload, X, Loader2, Image as ImageIcon, Info, Phone, Settings } from 'lucide-react'
-import AdminFooterEditor from '../../../../components/AdminFooterEditor'
+import AdminFooterEditor from './AdminFooterEditor'
 
 interface LayoutAssets {
   logo?: string

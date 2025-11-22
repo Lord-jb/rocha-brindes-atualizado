@@ -3,6 +3,7 @@ import { useMemo, lazy, Suspense, useState } from 'react'
 import { useCatalog } from '../../core/hooks/useCatalog'
 import { useCart } from '../../core/store/cart'
 import Header from '../../shared/components/Header'
+import CartSidebar from '../../features/cart/CartSidebar'
 import type { Product } from '../../types/product'
 
 const HeroBanner = lazy(() => import('../../shared/components/HeroBanner'))
@@ -10,7 +11,6 @@ const PopularCategories = lazy(() => import('../../shared/components/PopularCate
 const CategorySidebar = lazy(() => import('./components/CategorySidebar'))
 const ProductGrid = lazy(() => import('./components/ProductGrid'))
 const ProductModal = lazy(() => import('./components/ProductModal'))
-const CartSidebar = lazy(() => import('../../features/cart/CartSidebar'))
 
 export default function CatalogPage() {
   const { data, isLoading } = useCatalog()
@@ -73,9 +73,10 @@ export default function CatalogPage() {
         </div>
       </main>
 
+      <CartSidebar />
+      
       <Suspense fallback={null}>
         {selected && <ProductModal product={selected} onClose={() => setSelected(null)} />}
-        <CartSidebar />
       </Suspense>
     </>
   )

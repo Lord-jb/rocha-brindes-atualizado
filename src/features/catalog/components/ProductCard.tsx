@@ -1,7 +1,7 @@
 // FILE: src/features/catalog/components/ProductCard.tsx
 import { memo } from 'react'
 import { ShoppingCart, Eye } from 'lucide-react'
-import { optimizeUrl } from '../../../shared/utils/image'
+import { optimizeUrl } from '../../../core/lib/cloudflare'
 import type { Product } from '../../../types/product'
 
 interface Props {

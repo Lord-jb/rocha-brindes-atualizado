@@ -1,121 +1,147 @@
-// src/core/lib/cloudflare.ts
-const CLOUDFLARE_ACCOUNT_HASH = 'iem94FVEkj3Qjv3DsJXpbQ'
+// FILE: src/core/lib/cloudflare.ts
 
+const CLOUDFLARE_ACCOUNT_HASH = "iem94FVEkj3Qjv3DsJXpbQ"
+
+/*  ╔════════════════════════════════════════════╗
+    ║   1. OPTIMIZE URL (USADO NO PROJETO TODO)  ║
+    ╚════════════════════════════════════════════╝ */
+export function optimizeUrl(
+  imageId: string,
+  variant: "public" | "thumbnail" | "original" = "public"
+): string {
+  if (!imageId) return ""
+  if (imageId.startsWith("http") || imageId.startsWith("blob:") || imageId.startsWith("data:"))
+    return imageId
+
+  return `https://imagedelivery.net/${CLOUDFLARE_ACCOUNT_HASH}/${imageId}/${variant}`
+}
+
+/*  ╔══════════════════════════════════════╗
+    ║   2. PRELOAD (IMPACTO REAL NO LCP?)  ║
+    ╚══════════════════════════════════════╝ */
+export function preloadImage(imageId: string, priority: "high" | "low" = "high") {
+  if (typeof window === "undefined") return
+  if (!imageId) return
+
+  const url = optimizeUrl(imageId, "public")
+
+  const link = document.createElement("link")
+  link.rel = "preload"
+  link.as = "image"
+  link.href = url
+
+  // fetchPriority só funciona no Chrome
+  link.setAttribute("fetchpriority", priority)
+
+  link.onload = () => {
+    setTimeout(() => link.remove(), 200)
+  }
+
+  document.head.appendChild(link)
+}
+
+/*  ╔═══════════════════════════════════════════════════╗
+    ║   3. PRELOAD MULTIPLO (AGORA FUNCIONA DE VERDADE) ║
+    ╚═══════════════════════════════════════════════════╝ */
+export function preloadCriticalImages(imageIds: string[]) {
+  if (typeof window === "undefined") return
+  if (!Array.isArray(imageIds)) return
+
+  imageIds.forEach(id => preloadImage(id, "high"))
+}
+
+/*  ╔═══════════════════════════════════════╗
+    ║   4. PEGAR DIMENSÕES (SAFE NO SSR)    ║
+    ╚═══════════════════════════════════════╝ */
+export function getImageDimensions(url: string): Promise<{ width: number; height: number }> {
+  if (typeof window === "undefined") {
+    return Promise.resolve({ width: 0, height: 0 })
+  }
+
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight })
+    img.onerror = reject
+    img.src = url
+  })
+}
+
+/*  ╔════════════════════════════════╗
+    ║   5. UPLOAD PARA CLOUDFLARE    ║
+    ╚════════════════════════════════╝ */
 interface UploadMetadata {
   folder: string
   productId?: string
   variation?: string
-  type?: 'main' | 'variation' | 'logo' | 'banner' | 'category' | 'promotion' | 'popup'
+  type?: "main" | "variation" | "logo" | "banner" | "category" | "promotion" | "popup"
 }
 
-export async function uploadToCloudflare(
-  file: File, 
-  metadata: UploadMetadata
-): Promise<string> {
-  const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
-  
-  let customFilename = ''
-  if (metadata.type === 'main' && metadata.productId) {
+export async function uploadToCloudflare(file: File, metadata: UploadMetadata): Promise<string> {
+  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg"
+
+  let customFilename = file.name
+
+  if (metadata.type === "main" && metadata.productId)
     customFilename = `${metadata.productId}.${ext}`
-  } else if (metadata.type === 'variation' && metadata.productId && metadata.variation) {
-    const colorSlug = metadata.variation.toLowerCase().replace(/\s+/g, '-')
-    customFilename = `${metadata.productId}-${colorSlug}.${ext}`
-  } else {
-    customFilename = file.name
+
+  if (metadata.type === "variation" && metadata.productId && metadata.variation) {
+    const slug = metadata.variation.toLowerCase().replace(/\s+/g, "-")
+    customFilename = `${metadata.productId}-${slug}.${ext}`
   }
 
   const renamedFile = new File([file], customFilename, { type: file.type })
-  
+
   const formData = new FormData()
   formData.append("file", renamedFile)
-  
-  formData.append("metadata", JSON.stringify({
-    folder: metadata.folder,
-    productId: metadata.productId,
-    variation: metadata.variation,
-    type: metadata.type,
-    filename: customFilename,
-    uploadDate: new Date().toISOString()
-  }))
+  formData.append(
+    "metadata",
+    JSON.stringify({
+      ...metadata,
+      filename: customFilename,
+      uploadDate: new Date().toISOString()
+    })
+  )
 
   const res = await fetch("https://imagens.bjeslee19.workers.dev/", {
     method: "POST",
-    body: formData,
+    body: formData
   })
 
-  const text = await res.text()
+  const raw = await res.text()
   let data: any
   try {
-    data = JSON.parse(text)
+    data = JSON.parse(raw)
   } catch {
-    data = text
+    data = raw
   }
 
-  if (!res.ok) {
-    console.error("Upload error RAW:", data)
-    throw new Error(typeof data === "string" ? data : JSON.stringify(data))
-  }
+  if (!res.ok) throw new Error(JSON.stringify(data))
+  if (!data?.imageId) throw new Error("Cloudflare não retornou o imageId.")
 
-  if (!data || !data.imageId) {
-    console.error("Upload OK mas sem imageId:", data)
-    throw new Error("ID da imagem não retornado pelo servidor")
-  }
-
-  return data.imageId as string
+  return data.imageId
 }
 
-export function optimizeUrl(imageId: string, variant: 'public' | 'thumbnail' | 'original' = 'public'): string {
-  if (!imageId) return ''
-  if (imageId.startsWith('http://') || imageId.startsWith('https://')) return imageId
-  if (imageId.startsWith('blob:') || imageId.startsWith('data:')) return imageId
-  
-  return `https://imagedelivery.net/${CLOUDFLARE_ACCOUNT_HASH}/${imageId}/${variant}`
-}
-
+/*  ╔══════════════════════════════════════╗
+    ║   6. DELETE SINGLE E MULTIPLE IMAGES  ║
+    ╚══════════════════════════════════════╝ */
 export async function deleteCloudflareImage(imageId: string): Promise<void> {
-  if (!imageId) return
-  if (imageId.startsWith('http://') || imageId.startsWith('https://')) return
-  if (imageId.startsWith('blob:') || imageId.startsWith('data:')) return
+  if (!imageId || imageId.startsWith("http")) return
 
-  try {
-    const res = await fetch('https://imagens.bjeslee19.workers.dev/delete', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ imageId }),
-    })
-
-    if (!res.ok) {
-      const error = await res.text()
-      console.error(`Erro ao deletar imagem ${imageId}:`, error)
-    }
-  } catch (error) {
-    console.error(`Erro ao deletar imagem ${imageId}:`, error)
-  }
+  await fetch("https://imagens.bjeslee19.workers.dev/delete", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ imageId })
+  })
 }
 
 export async function deleteMultipleImages(imageIds: string[]): Promise<void> {
-  const validIds = imageIds.filter(
-    id => id && !id.startsWith('http') && !id.startsWith('blob:') && !id.startsWith('data:')
-  )
-  
-  if (validIds.length === 0) return
+  const valid = imageIds.filter(id => id && !id.startsWith("http"))
 
-  try {
-    const res = await fetch('https://imagens.bjeslee19.workers.dev/delete-multiple', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ imageIds: validIds }),
-    })
+  if (valid.length === 0) return
 
-    if (!res.ok) {
-      const error = await res.text()
-      console.error('Erro ao deletar múltiplas imagens:', error)
-    }
-  } catch (error) {
-    console.error('Erro ao deletar múltiplas imagens:', error)
-  }
+  await fetch("https://imagens.bjeslee19.workers.dev/delete-multiple", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ imageIds: valid })
+  })
 }

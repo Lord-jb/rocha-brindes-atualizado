@@ -1,7 +1,7 @@
 // FILE: src/features/catalog/components/ProductModal.tsx
 import { useState, useMemo, memo } from 'react'
 import { X, ShoppingCart, Plus, Minus, Package, Tag } from 'lucide-react'
-import { optimizeUrl } from '../../../shared/utils/image'
+import { optimizeUrl } from '../../../core/lib/cloudflare'
 import { useCart } from '../../../core/store/cart'
 import type { Product, ProductVariation } from '../../../types/product'
 

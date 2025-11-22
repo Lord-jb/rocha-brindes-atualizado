@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
-import { db } from '../core/lib/firebase'
+import { db } from '../../../../core/lib/firebase'
 import { Save, Loader, LayoutTemplate, MapPin, Phone, Mail, Globe, Plus, X, Type } from 'lucide-react'
 
 interface FooterData {

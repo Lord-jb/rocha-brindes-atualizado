@@ -33,27 +33,33 @@ export const useCart = create<CartStore>()(
       
       add: (p) => {
         const items = get().items
-        const existing = items.find(i => i.id === p.id)
+        const existing = items.find(i => i.id === p.id && i.cor === p.cor)
         
         const newItems = existing
-          ? items.map(i => i.id === p.id ? { ...i, quantity: i.quantity + 1 } : i)
+          ? items.map(i => (i.id === p.id && i.cor === p.cor) ? { ...i, quantity: i.quantity + 1 } : i)
           : [...items, { ...p, quantity: 1 }]
         
         set({ items: newItems, count: newItems.reduce((sum, i) => sum + i.quantity, 0) })
       },
       
       remove: (id) => {
-        const newItems = get().items.filter(i => i.id !== id)
+        const newItems = get().items.filter(i => !(i.id === id || `${i.id}-${i.cor}` === id))
         set({ items: newItems, count: newItems.reduce((sum, i) => sum + i.quantity, 0) })
       },
 
       updateQuantity: (id, quantity) => {
-        const newItems = get().items.map(i => i.id === id ? { ...i, quantity } : i)
+        const newItems = get().items.map(i => {
+          const itemKey = i.cor ? `${i.id}-${i.cor}` : i.id
+          return itemKey === id || i.id === id ? { ...i, quantity } : i
+        })
         set({ items: newItems, count: newItems.reduce((sum, i) => sum + i.quantity, 0) })
       },
       
       clear: () => set({ items: [], count: 0 }),
-      toggle: () => set({ isOpen: !get().isOpen }),
+      toggle: () => {
+        console.log('Toggle chamado, isOpen atual:', get().isOpen)
+        set({ isOpen: !get().isOpen })
+      },
       setCategory: (c) => set({ category: c }),
       setSearch: (s) => set({ search: s })
     }),

@@ -2,7 +2,7 @@
 import { useMemo, lazy, Suspense, useState, useEffect } from 'react'
 import { useCatalog, setCachedCatalog } from '../core/hooks/useCatalog'
 import { useCart } from '../core/store/cart'
-import { preloadCriticalImages } from '../shared/utils/image'
+import { preloadCriticalImages } from '../core/lib/cloudflare'
 import Header from '../shared/components/Header'
 import Providers from './Providers'
 import type { Product } from '../types/product'

@@ -1,6 +1,6 @@
 // src/shared/components/PopularCategories.tsx
 import { memo } from 'react'
-import { optimizeUrl } from '../utils/image'
+import { optimizeUrl } from '../../core/lib/cloudflare'
 import type { Category } from '../../types/product'
 
 interface Props {

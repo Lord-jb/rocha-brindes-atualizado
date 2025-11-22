@@ -4,7 +4,7 @@ import { X, Trash2, Send, ShoppingCart, Plus, Minus } from 'lucide-react'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../../core/lib/firebase'
 import { useCart } from '../../core/store/cart'
-import { optimizeUrl } from '../../shared/utils/image'
+import { optimizeUrl } from '../../core/lib/cloudflare'
 
 export default function CartSidebar() {
   const { items, isOpen, toggle, remove, clear, updateQuantity } = useCart()

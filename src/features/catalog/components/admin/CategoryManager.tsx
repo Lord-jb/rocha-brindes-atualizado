@@ -1,10 +1,11 @@
-// src/features/catalog/components/admin/CategoryManager.tsx
+// FILE: src/features/catalog/components/admin/CategoryManager.tsx
 import { useState } from 'react'
 import { doc, setDoc, deleteDoc, updateDoc } from 'firebase/firestore'
 import { uploadToCloudflare, deleteCloudflareImage } from '../../../../core/lib/cloudflare'
 import { db } from '../../../../core/lib/firebase'
 import { useCategories } from '../../../../core/hooks/useCategories'
-import { optimizeUrl } from '../../../../shared/utils/image'
+import { optimizeUrl } from '../../../../core/lib/cloudflare'
+import { useToast } from '../../../../shared/hooks/useToast'
 import { Trash2, Upload, X } from 'lucide-react'
 
 type Cat = {
@@ -22,6 +23,7 @@ export default function CategoryManager() {
   const [imagePreview, setImagePreview] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const { data: categories = [], refetch } = useCategories()
+  const { showToast } = useToast()
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -60,9 +62,10 @@ export default function CategoryManager() {
       setCategoryImage(null)
       setImagePreview('')
       refetch()
+      showToast('Categoria criada com sucesso!', 'success')
     } catch (error) {
       console.error(error)
-      alert('Erro ao criar categoria')
+      showToast('Erro ao criar categoria', 'error')
     } finally {
       setLoading(false)
     }
@@ -76,9 +79,10 @@ export default function CategoryManager() {
       }
       await deleteDoc(doc(db, 'categorias', cat.id))
       refetch()
+      showToast('Categoria excluída com sucesso!', 'success')
     } catch (error) {
       console.error(error)
-      alert('Erro ao excluir categoria')
+      showToast('Erro ao excluir categoria', 'error')
     }
   }
 
@@ -88,9 +92,10 @@ export default function CategoryManager() {
         popular: !cat.popular,
       })
       refetch()
+      showToast('Status atualizado!', 'success')
     } catch (e) {
       console.error(e)
-      alert('Não foi possível atualizar popular')
+      showToast('Não foi possível atualizar', 'error')
     }
   }
 
@@ -108,18 +113,19 @@ export default function CategoryManager() {
       
       await updateDoc(doc(db, 'categorias', cat.id), { imagePath: imageId })
       refetch()
+      showToast('Imagem atualizada!', 'success')
     } catch (e) {
       console.error(e)
-      alert('Não foi possível atualizar a imagem')
+      showToast('Não foi possível atualizar a imagem', 'error')
     }
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
+    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
       <h2 className="text-xl font-title font-bold mb-6">Gerenciar Categorias</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4 mb-6">
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold mb-2">
               Nome da categoria
@@ -196,25 +202,25 @@ export default function CategoryManager() {
         {categories.map((cat: Cat) => (
           <div
             key={cat.id}
-            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+            className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 rounded-lg gap-4"
           >
-            <div className="flex items-center gap-4 flex-1">
+            <div className="flex items-center gap-4 flex-1 w-full sm:w-auto">
               {cat.imagePath && (
                 <img
                   src={optimizeUrl(cat.imagePath, 'thumbnail')}
                   alt={cat.nome}
-                  className="w-16 h-16 object-cover rounded-lg"
+                  className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
                 />
               )}
-              <div className="flex-1">
-                <h3 className="font-semibold">{cat.nome}</h3>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold truncate">{cat.nome}</h3>
                 <p className="text-sm text-gray-500">
                   {cat.productCount || 0} produtos
                 </p>
-                <div className="mt-2 flex flex-wrap items-center gap-3">
+                <div className="mt-2 flex flex-wrap items-center gap-2">
                   <button
                     onClick={() => void togglePopular(cat)}
-                    className={`px-3 py-1 rounded border text-sm ${
+                    className={`px-3 py-1 rounded border text-xs sm:text-sm ${
                       cat.popular
                         ? 'bg-green-600 text-white border-green-600'
                         : 'bg-white text-gray-700 border-gray-300'
@@ -240,7 +246,7 @@ export default function CategoryManager() {
             </div>
             <button
               onClick={() => void handleDelete(cat)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded"
+              className="p-2 text-red-600 hover:bg-red-50 rounded self-end sm:self-auto"
             >
               <Trash2 size={18} />
             </button>

@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react'
 import { doc, setDoc, getDoc, collection, getDocs, query, orderBy, limit } from 'firebase/firestore'
 import { db } from '../../../../core/lib/firebase'
-import { optimizeUrl } from '../../../../core/lib/cloudflare'
-import { Upload, X, Loader2, Video, Sparkles, Save, Package, Type, BarChart3, Info, Plus, Trash2, MoveUp, MoveDown } from 'lucide-react'
+import { optimizeUrl, uploadToCloudflare } from '../../../../core/lib/cloudflare'
+import { Upload, X, Loader2, Video, Sparkles, Save, Package, Type, BarChart3, Info, Plus, Trash2, MoveUp, MoveDown, Image } from 'lucide-react'
 import type { Product } from '../../../../types/product'
 
 interface VideoSection {
@@ -98,6 +98,7 @@ export default function LandingManager() {
   const [data, setData] = useState<LandingData>(DEFAULT_LANDING_DATA)
   const [loading, setLoading] = useState(false)
   const [uploadingType, setUploadingType] = useState<string | null>(null)
+  const [uploadingSection, setUploadingSection] = useState<number | null>(null)
   const [message, setMessage] = useState('')
   const [products, setProducts] = useState<Product[]>([])
   const [selectedProducts, setSelectedProducts] = useState<string[]>([])
@@ -185,6 +186,23 @@ export default function LandingManager() {
       }
     })
   }
+
+const handleImageUpload = async (file: File, sectionIndex: number) => {
+  setUploadingSection(sectionIndex)
+  try {
+    const imageId = await uploadToCloudflare(file, {
+      folder: 'landing',
+      type: 'banner'
+    })
+    updateInfoSection(sectionIndex, 'imageUrl', imageId)
+    showMessage('✅ Imagem enviada!')
+  } catch (error) {
+    console.error('Erro ao enviar imagem:', error)
+    showMessage('❌ Erro ao enviar imagem')
+  } finally {
+    setUploadingSection(null)
+  }
+}
 
   const handleVideoUpload = async (url: string, thumbnail: string, title: string, description: string) => {
     setUploadingType('video')
@@ -470,14 +488,44 @@ export default function LandingManager() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold mb-2">URL da Imagem (opcional)</label>
-                  <input
-                    type="url"
-                    value={section.imageUrl || ''}
-                    onChange={(e) => updateInfoSection(idx, 'imageUrl', e.target.value)}
-                    className="w-full px-4 py-2 border-2 rounded-lg focus:border-primary outline-none"
-                    placeholder="https://exemplo.com/imagem.jpg"
-                  />
+                  <label className="block text-sm font-semibold mb-2">Imagem (opcional)</label>
+                  <div className="flex gap-4">
+                    {section.imageUrl && (
+                      <div className="relative w-32 h-32 border-2 rounded-lg overflow-hidden">
+                        <img
+                          src={optimizeUrl(section.imageUrl, 'thumbnail')}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          onClick={() => updateInfoSection(idx, 'imageUrl', undefined)}
+                          className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    )}
+                    <label className="flex-1 flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-4 cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) void handleImageUpload(file, idx)
+                        }}
+                        className="hidden"
+                        disabled={uploadingSection === idx}
+                      />
+                      {uploadingSection === idx ? (
+                        <Loader2 className="animate-spin text-primary mb-2" size={32} />
+                      ) : (
+                        <Image className="text-gray-400 mb-2" size={32} />
+                      )}
+                      <span className="text-sm text-gray-600 text-center">
+                        {uploadingSection === idx ? 'Enviando...' : 'Clique para fazer upload'}
+                      </span>
+                    </label>
+                  </div>
                 </div>
 
                 <div>
@@ -695,9 +743,7 @@ export default function LandingManager() {
               className="w-full px-4 py-2 border-2 rounded-lg focus:border-primary outline-none"
               placeholder="Clientes Satisfeitos"
             />
-          </div>
-
-          <div>
+          </div><div>
             <label className="block text-sm font-semibold mb-2">Experiência - Valor</label>
             <input
               type="text"

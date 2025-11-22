@@ -16,6 +16,7 @@ import VideoSection from '../shared/components/VideoSection'
 import CTASection from '../shared/components/CTASection'
 import WhatsAppButton from '../shared/components/WhatsAppButton'
 import Footer from '../shared/components/Footer'
+import CartSidebar from '../features/cart/CartSidebar'
 import Providers from './Providers'
 
 interface VideoItem {
@@ -212,6 +213,7 @@ function HomeContent() {
       </main>
 
       <WhatsAppButton number={whatsappNumber} />
+      <CartSidebar />
 
       <Suspense fallback={null}>
         <Footer />
