@@ -4,6 +4,7 @@ import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { uploadToCloudflare, optimizeUrl, deleteCloudflareImage } from '../../../../core/lib/cloudflare'
 import { db } from '../../../../core/lib/firebase'
 import { Upload, X, Loader2, Image as ImageIcon, Info, Phone, Settings } from 'lucide-react'
+import AdminFooterEditor from '../../../../components/AdminFooterEditor'
 
 interface LayoutAssets {
   logo?: string
@@ -225,7 +226,7 @@ export default function LayoutManager() {
           </div>
         </div>
       </div>
-
+          <AdminFooterEditor />
       <div className="flex justify-end">
         <button
           onClick={() => void saveCompanyInfo()}

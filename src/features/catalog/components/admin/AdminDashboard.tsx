@@ -1,4 +1,5 @@
-// src/features/catalog/components/admin/AdminDashboard.tsx - ATUALIZAR
+// src/features/catalog/components/admin/AdminDashboard.tsx - REMOVER companyInfo, manter só Landing
+
 import { useState } from 'react'
 import { signOut } from 'firebase/auth'
 import { auth } from '../../../../core/lib/firebase'
@@ -9,7 +10,7 @@ import LayoutManager from '../../../../features/catalog/components/admin/LayoutM
 import LandingManager from '../../../../features/catalog/components/admin/LandingManager'
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'products' | 'categories' | 'layout' | 'landing' | 'config'>('products')
+  const [activeTab, setActiveTab] = useState<'products' | 'categories' | 'landing' | 'config'>('products')
 
   const handleLogout = async () => {
     await signOut(auth)
@@ -35,7 +36,7 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('products')}
             className={`px-6 py-2 rounded-lg font-semibold transition-all whitespace-nowrap ${
               activeTab === 'products'
-                ? 'bg-primary text-text-primary'
+                ? 'bg-primary text-white'
                 : 'bg-white text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -45,7 +46,7 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('categories')}
             className={`px-6 py-2 rounded-lg font-semibold transition-all whitespace-nowrap ${
               activeTab === 'categories'
-                ? 'bg-primary text-text-primary'
+                ? 'bg-primary text-white'
                 : 'bg-white text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -55,17 +56,17 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('landing')}
             className={`px-6 py-2 rounded-lg font-semibold transition-all whitespace-nowrap ${
               activeTab === 'landing'
-                ? 'bg-primary text-text-primary'
+                ? 'bg-primary text-white'
                 : 'bg-white text-gray-600 hover:bg-gray-100'
             }`}
           >
-            Landing Page
+            Página Inicial
           </button>
           <button
-            onClick={() => setActiveTab('layout')}
+            onClick={() => setActiveTab('config')}
             className={`px-6 py-2 rounded-lg font-semibold transition-all whitespace-nowrap ${
-              activeTab === 'layout'
-                ? 'bg-primary text-text-primary'
+              activeTab === 'config'
+                ? 'bg-primary text-white'
                 : 'bg-white text-gray-600 hover:bg-gray-100'
             }`}
           >
@@ -84,7 +85,7 @@ export default function AdminDashboard() {
 
         {activeTab === 'landing' && <LandingManager />}
 
-        {activeTab === 'layout' && <LayoutManager />}
+        {activeTab === 'config' && <LayoutManager />}
       </div>
     </div>
   )

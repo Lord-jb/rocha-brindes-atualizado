@@ -211,7 +211,7 @@ function CatalogContent() {
 
       <button
         onClick={handleWhatsApp}
-        className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-all z-40"
+        className="fixed bottom-20 right-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-all z-40"
         aria-label="Contato WhatsApp"
       >
         <MessageCircle size={28} />

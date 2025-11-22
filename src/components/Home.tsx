@@ -1,4 +1,4 @@
-// src/components/Home.tsx - CORRIGIR vídeos e remover debug
+// src/components/Home.tsx - VERSÃO FINAL COM DADOS DINÂMICOS
 
 import { lazy, Suspense, useState, useEffect } from 'react'
 import { useCatalog, setCachedCatalog } from '../core/hooks/useCatalog'
@@ -20,10 +20,48 @@ interface VideoItem {
   thumbnail?: string
 }
 
+interface LandingData {
+  hero: {
+    title: string
+    subtitle: string
+    ctaText: string
+  }
+  videos: VideoItem[]
+  featuredProductIds: string[]
+  stats: {
+    products: { value: string; label: string }
+    clients: { value: string; label: string }
+    years: { value: string; label: string }
+  }
+  cta: {
+    title: string
+    description: string
+    buttonText: string
+  }
+}
+
 function HomeContent() {
   const { data, isLoading } = useCatalog(1000)
   const [whatsappNumber, setWhatsappNumber] = useState('5589994333316')
-  const [videos, setVideos] = useState<VideoItem[]>([])
+  const [landingData, setLandingData] = useState<LandingData>({
+    hero: {
+      title: 'Brindes que Impressionam',
+      subtitle: 'Transforme sua marca em experiências memoráveis',
+      ctaText: 'Explorar Catálogo'
+    },
+    videos: [],
+    featuredProductIds: [],
+    stats: {
+      products: { value: '500+', label: 'Produtos Disponíveis' },
+      clients: { value: '1000+', label: 'Clientes Satisfeitos' },
+      years: { value: '15+', label: 'Anos de Experiência' }
+    },
+    cta: {
+      title: 'Pronto para Começar?',
+      description: 'Solicite um orçamento personalizado e descubra como podemos ajudar sua marca',
+      buttonText: 'Ver Catálogo Completo'
+    }
+  })
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
 
   useEffect(() => {
@@ -37,15 +75,12 @@ function HomeContent() {
       try {
         const docSnap = await getDoc(doc(db, 'config', 'landing'))
         if (docSnap.exists()) {
-          const landingData = docSnap.data()
+          const loadedData = docSnap.data() as LandingData
+          setLandingData(loadedData)
           
-          if (landingData.videos && Array.isArray(landingData.videos)) {
-            setVideos(landingData.videos.slice(0, 3))
-          }
-          
-          if (landingData.featuredProductIds && data?.products) {
+          if (loadedData.featuredProductIds && data?.products) {
             const featured = data.products.filter((p: Product) => 
-              landingData.featuredProductIds.includes(p.id)
+              loadedData.featuredProductIds.includes(p.id)
             )
             setFeaturedProducts(featured)
           }
@@ -90,31 +125,31 @@ function HomeContent() {
   return (
     <>
       <Header />
-      <main className="min-h-screen  bg-gray-50 pt-4 md:pt-8">
+      <main className="min-h-screen bg-gray-50 pt-4 md:pt-8">
         <div className="container mx-auto px-4 pb-4">
           <Suspense fallback={<div className="mb-8 h-48 md:h-56 rounded-2xl bg-gray-100 animate-pulse" />}>
             <HeroBanner banners={data?.layout.banners || []} />
           </Suspense>
 
-          {/* Hero Section */}
+          {/* Hero Section - DINÂMICO */}
           <section className="mb-16 text-center">
             <h1 className="text-4xl md:text-6xl font-title font-bold text-dark mb-6">
-              Brindes que Impressionam
+              {landingData.hero.title}
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 mb-8">
-              Transforme sua marca em experiências memoráveis
+              {landingData.hero.subtitle}
             </p>
             <a
               href="/catalogo"
               className="inline-block bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl"
             >
-              Explorar Catálogo
+              {landingData.hero.ctaText}
             </a>
           </section>
 
           {/* Carrossel de Produtos em Destaque */}
           {featuredProducts.length > 0 && (
-            <section className="mb-12">
+            <section className="mb-16">
               <h2 className="text-2xl md:text-3xl font-title font-bold text-dark mb-6 text-center">
                 Produtos em Destaque
               </h2>
@@ -158,19 +193,6 @@ function HomeContent() {
             </section>
           )}
 
-          {data?.layout.companyInfo && (
-            <section className="mb-12 bg-white rounded-2xl shadow-card p-6 md:p-8">
-              <div className="text-center max-w-4xl mx-auto">
-                <h2 className="text-2xl md:text-3xl font-title font-bold text-dark mb-4">
-                  {data.layout.companyInfo.title || 'Sobre Nós'}
-                </h2>
-                <p className="text-gray-700 leading-relaxed text-sm md:text-base">
-                  {data.layout.companyInfo.description}
-                </p>
-              </div>
-            </section>
-          )}
-
           <Suspense fallback={null}>
             <PopularCategories 
               categories={data?.categories.filter(c => c.popular).slice(0, 4) || []} 
@@ -178,49 +200,30 @@ function HomeContent() {
             />
           </Suspense>
 
-          {/* Stats */}
+          {/* Stats - DINÂMICO */}
           <section className="mb-16 grid grid-cols-3 gap-8 text-center">
             <div>
-              <p className="text-4xl font-bold text-primary mb-2">500+</p>
-              <p className="text-gray-600">Produtos Disponíveis</p>
+              <p className="text-4xl font-bold text-primary mb-2">{landingData.stats.products.value}</p>
+              <p className="text-gray-600">{landingData.stats.products.label}</p>
             </div>
             <div>
-              <p className="text-4xl font-bold text-primary mb-2">1000+</p>
-              <p className="text-gray-600">Clientes Satisfeitos</p>
+              <p className="text-4xl font-bold text-primary mb-2">{landingData.stats.clients.value}</p>
+              <p className="text-gray-600">{landingData.stats.clients.label}</p>
             </div>
             <div>
-              <p className="text-4xl font-bold text-primary mb-2">15+</p>
-              <p className="text-gray-600">Anos de Experiência</p>
+              <p className="text-4xl font-bold text-primary mb-2">{landingData.stats.years.value}</p>
+              <p className="text-gray-600">{landingData.stats.years.label}</p>
             </div>
           </section>
 
-          {/* CTA Section */}
-          <section className="mb-16 bg-white rounded-2xl shadow-card p-8 text-center">
-            <h2 className="text-3xl font-title font-bold text-dark mb-4">
-              Pronto para Começar?
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Solicite um orçamento personalizado e descubra como podemos ajudar sua marca
-            </p>
-            <a
-              href="/catalogo"
-              className="inline-block bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl"
-            >
-              Ver Catálogo Completo
-            </a>
-          </section>
-        </div>
-      </main>
-
-
-          {/* Seção de Vídeos - AUTOPLAY, LOOP, SEM CONTROLES */}
-          {videos.length > 0 && (
-            <section className="mb-12 px-4">
+          {/* Seção de Vídeos */}
+          {landingData.videos.length > 0 && (
+            <section className="mb-16">
               <h2 className="text-2xl md:text-3xl font-title font-bold text-dark mb-6 text-center">
                 Conheça Nossos Produtos
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {videos.map((video, idx) => (
+                {landingData.videos.map((video, idx) => (
                   <div 
                     key={idx} 
                     className="relative aspect-video bg-gray-900 rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all group"
@@ -245,7 +248,25 @@ function HomeContent() {
               </div>
             </section>
           )}
-          
+
+          {/* CTA Section - DINÂMICO */}
+          <section className="mb-16 bg-white rounded-2xl shadow-card p-8 text-center">
+            <h2 className="text-3xl font-title font-bold text-dark mb-4">
+              {landingData.cta.title}
+            </h2>
+            <p className="text-gray-600 mb-6">
+              {landingData.cta.description}
+            </p>
+            <a
+              href="/catalogo"
+              className="inline-block bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl"
+            >
+              {landingData.cta.buttonText}
+            </a>
+          </section>
+        </div>
+      </main>
+
       <button
         onClick={handleWhatsApp}
         className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-all z-40"
