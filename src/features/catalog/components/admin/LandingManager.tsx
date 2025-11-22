@@ -1,8 +1,9 @@
+// FILE: src/components/admin/tabs/landing/LandingManager.tsx
 import { useState, useEffect } from 'react'
 import { doc, setDoc, getDoc, collection, getDocs, query, orderBy, limit } from 'firebase/firestore'
 import { db } from '../../../../core/lib/firebase'
 import { optimizeUrl } from '../../../../core/lib/cloudflare'
-import { Upload, X, Loader2, Video, Sparkles, Save, Package, Type, BarChart3 } from 'lucide-react'
+import { Upload, X, Loader2, Video, Sparkles, Save, Package, Type, BarChart3, Info, Plus, Trash2, MoveUp, MoveDown } from 'lucide-react'
 import type { Product } from '../../../../types/product'
 
 interface VideoSection {
@@ -12,12 +13,21 @@ interface VideoSection {
   thumbnail?: string
 }
 
+interface InfoBlock {
+  title: string
+  description: string
+  imageUrl?: string
+  imagePosition?: 'left' | 'right'
+  features?: string[]
+}
+
 interface LandingData {
   hero: {
     title: string
     subtitle: string
     ctaText: string
   }
+  infoSections?: InfoBlock[]
   videos: VideoSection[]
   featuredProductIds: string[]
   stats: {
@@ -38,6 +48,38 @@ const DEFAULT_LANDING_DATA: LandingData = {
     subtitle: 'Transforme sua marca em experiências memoráveis',
     ctaText: 'Explorar Catálogo'
   },
+  infoSections: [
+    {
+      title: 'Qualidade Garantida',
+      description: 'Trabalhamos apenas com fornecedores certificados e produtos de alta qualidade para garantir a satisfação dos nossos clientes.',
+      imagePosition: 'right',
+      features: [
+        'Produtos certificados e testados',
+        'Garantia de qualidade em todos os itens',
+        'Entrega rápida e segura'
+      ]
+    },
+    {
+      title: 'Personalização Completa',
+      description: 'Oferecemos personalização completa para que sua marca se destaque. Do design à produção, cuidamos de cada detalhe.',
+      imagePosition: 'left',
+      features: [
+        'Design exclusivo para sua marca',
+        'Múltiplas opções de personalização',
+        'Equipe especializada em branding'
+      ]
+    },
+    {
+      title: 'Atendimento Especializado',
+      description: 'Nossa equipe está pronta para ajudar você em cada etapa do processo, desde a escolha do produto até a entrega final.',
+      imagePosition: 'right',
+      features: [
+        'Consultoria gratuita',
+        'Suporte em todo o processo',
+        'Pós-venda diferenciado'
+      ]
+    }
+  ],
   videos: [],
   featuredProductIds: [],
   stats: {
@@ -74,9 +116,9 @@ export default function LandingManager() {
       if (docSnap.exists()) {
         const landingData = docSnap.data()
         
-        // Merge com dados padrão para garantir que todas as propriedades existam
         setData({
           hero: landingData.hero || DEFAULT_LANDING_DATA.hero,
+          infoSections: landingData.infoSections || DEFAULT_LANDING_DATA.infoSections,
           videos: landingData.videos || [],
           featuredProductIds: landingData.featuredProductIds || [],
           stats: {
@@ -179,6 +221,91 @@ export default function LandingManager() {
     showMessage('✅ Vídeo removido!')
   }
 
+  const addInfoSection = () => {
+    const newSection: InfoBlock = {
+      title: 'Nova Seção',
+      description: 'Descrição da seção',
+      imagePosition: 'right',
+      features: ['Item 1', 'Item 2', 'Item 3']
+    }
+    
+    setData(prev => ({
+      ...prev,
+      infoSections: [...(prev.infoSections || []), newSection]
+    }))
+    showMessage('✅ Seção adicionada!')
+  }
+
+  const removeInfoSection = (index: number) => {
+    setData(prev => ({
+      ...prev,
+      infoSections: prev.infoSections?.filter((_, i) => i !== index)
+    }))
+    showMessage('✅ Seção removida!')
+  }
+
+  const updateInfoSection = (index: number, field: keyof InfoBlock, value: any) => {
+    setData(prev => ({
+      ...prev,
+      infoSections: prev.infoSections?.map((section, i) => 
+        i === index ? { ...section, [field]: value } : section
+      )
+    }))
+  }
+
+  const addFeature = (sectionIndex: number) => {
+    setData(prev => ({
+      ...prev,
+      infoSections: prev.infoSections?.map((section, i) => 
+        i === sectionIndex 
+          ? { ...section, features: [...(section.features || []), 'Novo item'] }
+          : section
+      )
+    }))
+  }
+
+  const removeFeature = (sectionIndex: number, featureIndex: number) => {
+    setData(prev => ({
+      ...prev,
+      infoSections: prev.infoSections?.map((section, i) => 
+        i === sectionIndex 
+          ? { ...section, features: section.features?.filter((_, fi) => fi !== featureIndex) }
+          : section
+      )
+    }))
+  }
+
+  const updateFeature = (sectionIndex: number, featureIndex: number, value: string) => {
+    setData(prev => ({
+      ...prev,
+      infoSections: prev.infoSections?.map((section, i) => 
+        i === sectionIndex 
+          ? { 
+              ...section, 
+              features: section.features?.map((f, fi) => fi === featureIndex ? value : f) 
+            }
+          : section
+      )
+    }))
+  }
+
+  const moveInfoSection = (index: number, direction: 'up' | 'down') => {
+    if (!data.infoSections) return
+    
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    if (newIndex < 0 || newIndex >= data.infoSections.length) return
+
+    const newSections = [...data.infoSections]
+    const temp = newSections[index]
+    newSections[index] = newSections[newIndex]
+    newSections[newIndex] = temp
+
+    setData(prev => ({
+      ...prev,
+      infoSections: newSections
+    }))
+  }
+
   if (loadingData) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -196,7 +323,6 @@ export default function LandingManager() {
         </div>
       )}
 
-      {/* Hero Section */}
       <div className="bg-white rounded-2xl shadow-sm border p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center">
@@ -253,7 +379,149 @@ export default function LandingManager() {
         </div>
       </div>
 
-      {/* Produtos em Destaque */}
+      <div className="bg-white rounded-2xl shadow-sm border p-8">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-indigo-500/10 rounded-lg flex items-center justify-center">
+              <Info size={20} className="text-indigo-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold">Seções de Informação</h2>
+              <p className="text-sm text-gray-500">Blocos informativos ao longo da página</p>
+            </div>
+          </div>
+          <button
+            onClick={addInfoSection}
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600"
+          >
+            <Plus size={18} />
+            Adicionar Seção
+          </button>
+        </div>
+
+        {data.infoSections && data.infoSections.length > 0 ? (
+          <div className="space-y-6">
+            {data.infoSections.map((section, idx) => (
+              <div key={idx} className="border-2 rounded-xl p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-lg">Seção {idx + 1}</h3>
+                  <div className="flex items-center gap-2">
+                    {idx > 0 && (
+                      <button
+                        onClick={() => moveInfoSection(idx, 'up')}
+                        className="p-2 hover:bg-gray-100 rounded-lg"
+                        title="Mover para cima"
+                      >
+                        <MoveUp size={18} />
+                      </button>
+                    )}
+                    {idx < data.infoSections!.length - 1 && (
+                      <button
+                        onClick={() => moveInfoSection(idx, 'down')}
+                        className="p-2 hover:bg-gray-100 rounded-lg"
+                        title="Mover para baixo"
+                      >
+                        <MoveDown size={18} />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => removeInfoSection(idx)}
+                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Título</label>
+                    <input
+                      type="text"
+                      value={section.title}
+                      onChange={(e) => updateInfoSection(idx, 'title', e.target.value)}
+                      className="w-full px-4 py-2 border-2 rounded-lg focus:border-primary outline-none"
+                      placeholder="Título da seção"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Posição da Imagem</label>
+                    <select
+                      value={section.imagePosition || 'right'}
+                      onChange={(e) => updateInfoSection(idx, 'imagePosition', e.target.value as 'left' | 'right')}
+                      className="w-full px-4 py-2 border-2 rounded-lg focus:border-primary outline-none"
+                    >
+                      <option value="left">Esquerda</option>
+                      <option value="right">Direita</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold mb-2">Descrição</label>
+                  <textarea
+                    value={section.description}
+                    onChange={(e) => updateInfoSection(idx, 'description', e.target.value)}
+                    rows={3}
+                    className="w-full px-4 py-2 border-2 rounded-lg focus:border-primary outline-none resize-none"
+                    placeholder="Descrição detalhada da seção"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold mb-2">URL da Imagem (opcional)</label>
+                  <input
+                    type="url"
+                    value={section.imageUrl || ''}
+                    onChange={(e) => updateInfoSection(idx, 'imageUrl', e.target.value)}
+                    className="w-full px-4 py-2 border-2 rounded-lg focus:border-primary outline-none"
+                    placeholder="https://exemplo.com/imagem.jpg"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-semibold">Itens em Destaque</label>
+                    <button
+                      onClick={() => addFeature(idx)}
+                      className="text-sm text-primary hover:underline"
+                    >
+                      + Adicionar Item
+                    </button>
+                  </div>
+                  <div className="space-y-2">
+                    {section.features?.map((feature, fIdx) => (
+                      <div key={fIdx} className="flex gap-2">
+                        <input
+                          type="text"
+                          value={feature}
+                          onChange={(e) => updateFeature(idx, fIdx, e.target.value)}
+                          className="flex-1 px-4 py-2 border-2 rounded-lg focus:border-primary outline-none"
+                          placeholder={`Item ${fIdx + 1}`}
+                        />
+                        <button
+                          onClick={() => removeFeature(idx, fIdx)}
+                          className="px-3 text-red-500 hover:bg-red-50 rounded-lg"
+                        >
+                          <X size={18} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 bg-gray-50 rounded-xl">
+            <Info className="mx-auto text-gray-400 mb-3" size={48} />
+            <p className="text-gray-600 font-semibold">Nenhuma seção adicionada</p>
+            <p className="text-sm text-gray-500 mt-1">Clique em "Adicionar Seção" para começar</p>
+          </div>
+        )}
+      </div>
+
       <div className="bg-white rounded-2xl shadow-sm border p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-orange-500/10 rounded-lg flex items-center justify-center">
@@ -288,7 +556,6 @@ export default function LandingManager() {
               const isSelected = selectedProducts.includes(product.id)
               const imgId = product.thumb_url || product.imagem_url || product.variacoes?.[0]?.thumb_url
               const imgUrl = imgId ? optimizeUrl(imgId, 'thumbnail') : ''
-
               return (
                 <button
                   key={product.id}
@@ -344,7 +611,6 @@ export default function LandingManager() {
         )}
       </div>
 
-      {/* Estatísticas */}
       <div className="bg-white rounded-2xl shadow-sm border p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
@@ -470,7 +736,42 @@ export default function LandingManager() {
         </div>
       </div>
 
-      {/* Seção CTA Final */}
+      <div className="bg-white rounded-2xl shadow-sm border p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
+            <Video size={20} className="text-blue-600" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold">Vídeos de Produção</h2>
+            <p className="text-sm text-gray-500">Exibidos abaixo das estatísticas</p>
+          </div>
+        </div>
+
+        <VideoUploadForm onSubmit={handleVideoUpload} loading={uploadingType === 'video'} />
+
+        {data.videos.length > 0 && (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+            {data.videos.map((video, idx) => (
+              <div key={idx} className="border-2 rounded-xl overflow-hidden group">
+                <div className="relative aspect-video bg-gray-900">
+                  <video src={video.url} className="w-full h-full object-cover" muted />
+                </div>
+                <div className="p-4">
+                  <h3 className="font-bold mb-1">{video.title}</h3>
+                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{video.description}</p>
+                  <button
+                    onClick={() => removeVideo(idx)}
+                    className="text-red-500 text-sm hover:underline"
+                  >
+                    Remover
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="bg-white rounded-2xl shadow-sm border p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-pink-500/10 rounded-lg flex items-center justify-center">
@@ -526,44 +827,6 @@ export default function LandingManager() {
           </div>
         </div>
       </div>
-
-      {/* Videos Section */}
-      <div className="bg-white rounded-2xl shadow-sm border p-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
-            <Video size={20} className="text-blue-600" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold">Vídeos de Produção</h2>
-            <p className="text-sm text-gray-500">Exibidos abaixo das estatísticas</p>
-          </div>
-        </div>
-
-        <VideoUploadForm onSubmit={handleVideoUpload} loading={uploadingType === 'video'} />
-
-        {data.videos.length > 0 && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-            {data.videos.map((video, idx) => (
-              <div key={idx} className="border-2 rounded-xl overflow-hidden group">
-                <div className="relative aspect-video bg-gray-900">
-                  <video src={video.url} className="w-full h-full object-cover" muted />
-                </div>
-                <div className="p-4">
-                  <h3 className="font-bold mb-1">{video.title}</h3>
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{video.description}</p>
-                  <button
-                    onClick={() => removeVideo(idx)}
-                    className="text-red-500 text-sm hover:underline"
-                  >
-                    Remover
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
 
       <button
         onClick={saveData}

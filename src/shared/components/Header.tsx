@@ -1,5 +1,5 @@
 // src/shared/components/Header.tsx - ATUALIZAR
-import { ShoppingCart } from 'lucide-react'
+import { ShoppingBag } from 'lucide-react'
 import { useCart } from '../../core/store/cart'
 import { useCatalog } from '../../core/hooks/useCatalog'
 import { optimizeUrl } from '../../shared/utils/image'
@@ -33,7 +33,7 @@ export default function Header() {
             className="relative p-2.5 sm:p-3 bg-primary hover:bg-primary-dark text-white rounded-full transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105" 
             aria-label="Abrir carrinho"
           >
-            <ShoppingCart size={20} className="sm:w-6 sm:h-6" strokeWidth={2.5} />
+            <ShoppingBag size={20} className="sm:w-6 sm:h-6" strokeWidth={2.5} />
             {count > 0 && (
               <span className="absolute -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 bg-accent text-dark font-bold text-[10px] sm:text-xs min-w-[20px] sm:min-w-[24px] h-[20px] sm:h-[24px] flex items-center justify-center rounded-full border-2 sm:border-3 border-white shadow-md">
                 {count}
