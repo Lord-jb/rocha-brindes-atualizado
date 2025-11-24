@@ -72,6 +72,15 @@ export default memo(function PopularCategories({ categories, onSelect }: Props) 
           )
         })}
       </div>
+
+      <div className="mt-8 text-center">
+        <a
+          href="/catalogo"
+          className="inline-block bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-xl font-semibold text-sm md:text-base transition-all shadow-lg hover:shadow-xl"
+        >
+          Explorar catálogo
+        </a>
+      </div>
     </section>
   )
 })

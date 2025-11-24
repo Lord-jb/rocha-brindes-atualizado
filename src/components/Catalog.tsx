@@ -6,7 +6,7 @@ import { preloadCriticalImages } from '../core/lib/cloudflare'
 import Header from '../shared/components/Header'
 import Providers from './Providers'
 import type { Product } from '../types/product'
-import { ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react'
+import { ChevronLeft, ChevronRight, MessageCircle, Search } from 'lucide-react'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../core/lib/firebase'
 
@@ -22,7 +22,18 @@ function CatalogContent() {
   const [selected, setSelected] = useState<Product | null>(null)
   const [whatsappNumber, setWhatsappNumber] = useState('5589994333316')
   const [page, setPage] = useState(0)
-  const pageSize = 6
+  const [isMobileGrid, setIsMobileGrid] = useState(false)
+
+  useEffect(() => {
+    const updateGrid = () => {
+      setIsMobileGrid(window.innerWidth < 768)
+    }
+    updateGrid()
+    window.addEventListener('resize', updateGrid)
+    return () => window.removeEventListener('resize', updateGrid)
+  }, [])
+
+  const pageSize = isMobileGrid ? 15 : 40
 
   useEffect(() => {
     if (data) {
@@ -93,8 +104,8 @@ function CatalogContent() {
   }
 
   const skeleton = (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {[...Array(6)].map((_, i) => (
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {[...Array(pageSize)].map((_, i) => (
         <div key={i} className="bg-white rounded-xl h-96 animate-pulse" />
       ))}
     </div>
@@ -134,16 +145,17 @@ function CatalogContent() {
   }
 
   const categoryInfo = data?.categories.find(c => c.nome === category)
+  const categoriesList = data?.categories.map(c => c.nome) || []
 
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50 pt-4 md:pt-8">
+      <main className="min-h-screen bg-gray-50 pt-4 md:pt-8 overflow-x-hidden">
         <div className="container mx-auto px-4 pb-4">
           <div className="grid lg:grid-cols-[280px_1fr] gap-8">
             <Suspense fallback={null}>
               <CategorySidebar
-                categories={data?.categories.map(c => c.nome) || []}
+                categories={categoriesList}
                 selected={category}
                 onSelect={setCategory}
                 search={search}
@@ -152,6 +164,35 @@ function CatalogContent() {
             </Suspense>
 
             <div>
+              {isMobileGrid && (
+                <div className="md:hidden mb-6 space-y-3">
+                  <div className="flex items-center gap-2 bg-white rounded-full border border-gray-200 px-4 py-2 shadow-sm">
+                    <Search size={18} className="text-gray-500" />
+                    <input
+                      type="text"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Buscar produtos ou SKUs"
+                      className="flex-1 bg-transparent outline-none text-sm"
+                    />
+                  </div>
+                  <div className="flex gap-2 overflow-x-auto pb-1">
+                    {['Todos', ...categoriesList].map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => setCategory(cat)}
+                        className={`whitespace-nowrap px-3 py-1.5 rounded-full border text-xs ${
+                          category === cat
+                            ? 'bg-primary text-white border-primary'
+                            : 'bg-white text-gray-700 border-gray-200'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {categoryInfo && (categoryInfo.descricao || categoryInfo.videoUrl) && (
                 <div className="mb-8 bg-white rounded-2xl shadow-card overflow-hidden">
                   {categoryInfo.videoUrl && (
@@ -222,6 +263,21 @@ function CatalogContent() {
         <CartSidebar />
         <Footer />
       </Suspense>
+
+      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 py-8 px-4 mt-6">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg md:text-xl font-title font-bold text-dark">Precisa de ajuda rápida?</h3>
+            <p className="text-sm text-gray-600">Use os filtros e a busca para achar produtos ou fale conosco pelo WhatsApp.</p>
+          </div>
+          <button
+            onClick={handleWhatsApp}
+            className="px-5 py-3 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-md font-semibold text-sm transition-all"
+          >
+            Abrir WhatsApp
+          </button>
+        </div>
+      </div>
     </>
   )
 }

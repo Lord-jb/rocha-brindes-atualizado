@@ -2,7 +2,7 @@
 interface HeroSectionProps {
   title: string
   subtitle: string
-  ctaText: string
+  ctaText?: string
 }
 
 export default function HeroSection({ title, subtitle, ctaText }: HeroSectionProps) {
@@ -14,12 +14,14 @@ export default function HeroSection({ title, subtitle, ctaText }: HeroSectionPro
       <p className="text-xl md:text-2xl text-gray-600 mb-8">
         {subtitle}
       </p>
-      <a
-        href="/catalogo"
-        className="inline-block bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl"
-      >
-        {ctaText}
-      </a>
+      {ctaText && (
+        <a
+          href="/catalogo"
+          className="inline-block bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl"
+        >
+          {ctaText}
+        </a>
+      )}
     </section>
   )
 }

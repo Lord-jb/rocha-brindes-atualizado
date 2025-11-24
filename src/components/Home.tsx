@@ -176,7 +176,20 @@ function HomeContent() {
           <HeroSection 
             title={landingData.hero.title}
             subtitle={landingData.hero.subtitle}
-            ctaText={landingData.hero.ctaText}
+          />
+
+          <StatsSection stats={landingData.stats} />
+
+          {landingData.infoSections?.[0] && (
+            <InfoSection {...landingData.infoSections[0]} />
+          )}
+
+          <VideoSection videos={landingData.videos} />
+
+          <CTASection 
+            title={landingData.cta.title}
+            description={landingData.cta.description}
+            buttonText={landingData.cta.buttonText}
           />
 
           <Suspense fallback={null}>
@@ -186,29 +199,15 @@ function HomeContent() {
             />
           </Suspense>
 
-          {landingData.infoSections?.[0] && (
-            <InfoSection {...landingData.infoSections[0]} />
-          )}
-
           <FeaturedProducts products={featuredProducts} />
-
-          <StatsSection stats={landingData.stats} />
 
           {landingData.infoSections?.[1] && (
             <InfoSection {...landingData.infoSections[1]} />
           )}
 
-          <VideoSection videos={landingData.videos} />
-
           {landingData.infoSections?.[2] && (
             <InfoSection {...landingData.infoSections[2]} />
           )}
-
-          <CTASection 
-            title={landingData.cta.title}
-            description={landingData.cta.description}
-            buttonText={landingData.cta.buttonText}
-          />
         </div>
       </main>
 

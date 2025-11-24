@@ -38,3 +38,30 @@ export interface LayoutConfig {
     description: string
   }
 }
+
+// Draft/import helpers for ZIP importer (does not change existing Product schema)
+export type ZipImageRef = {
+  path: string
+  file: File
+  previewUrl: string
+}
+
+export type DraftProduct = {
+  id: string
+  nome: string
+  descricao: string
+  categorias: string[]
+  destaque: boolean
+  colors: string[]
+  imagesByColor: Record<string, ZipImageRef[]>
+  selectedByColor?: Record<string, string>
+  coverPath?: string
+  mainColor?: string
+  categoryScores?: Record<string, number>
+  validation?: {
+    critical: string[]
+    warnings: string[]
+  }
+  status: 'draft' | 'saving' | 'saved' | 'error'
+  errors?: string[]
+}
