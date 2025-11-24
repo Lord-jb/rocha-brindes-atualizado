@@ -2,9 +2,6 @@
 
 const CLOUDFLARE_ACCOUNT_HASH = "iem94FVEkj3Qjv3DsJXpbQ"
 
-/*  ╔════════════════════════════════════════════╗
-    ║   1. OPTIMIZE URL (USADO NO PROJETO TODO)  ║
-    ╚════════════════════════════════════════════╝ */
 export function optimizeUrl(
   imageId: string,
   variant: "public" | "thumbnail" | "original" = "public"
@@ -15,10 +12,6 @@ export function optimizeUrl(
 
   return `https://imagedelivery.net/${CLOUDFLARE_ACCOUNT_HASH}/${imageId}/${variant}`
 }
-
-/*  ╔══════════════════════════════════════╗
-    ║   2. PRELOAD (IMPACTO REAL NO LCP?)  ║
-    ╚══════════════════════════════════════╝ */
 export function preloadImage(imageId: string, priority: "high" | "low" = "high") {
   if (typeof window === "undefined") return
   if (!imageId) return
@@ -39,20 +32,12 @@ export function preloadImage(imageId: string, priority: "high" | "low" = "high")
 
   document.head.appendChild(link)
 }
-
-/*  ╔═══════════════════════════════════════════════════╗
-    ║   3. PRELOAD MULTIPLO (AGORA FUNCIONA DE VERDADE) ║
-    ╚═══════════════════════════════════════════════════╝ */
 export function preloadCriticalImages(imageIds: string[]) {
   if (typeof window === "undefined") return
   if (!Array.isArray(imageIds)) return
 
   imageIds.forEach(id => preloadImage(id, "high"))
 }
-
-/*  ╔═══════════════════════════════════════╗
-    ║   4. PEGAR DIMENSÕES (SAFE NO SSR)    ║
-    ╚═══════════════════════════════════════╝ */
 export function getImageDimensions(url: string): Promise<{ width: number; height: number }> {
   if (typeof window === "undefined") {
     return Promise.resolve({ width: 0, height: 0 })
@@ -66,9 +51,6 @@ export function getImageDimensions(url: string): Promise<{ width: number; height
   })
 }
 
-/*  ╔════════════════════════════════╗
-    ║   5. UPLOAD PARA CLOUDFLARE    ║
-    ╚════════════════════════════════╝ */
 interface UploadMetadata {
   folder: string
   productId?: string
@@ -102,7 +84,7 @@ export async function uploadToCloudflare(file: File, metadata: UploadMetadata): 
     })
   )
 
-  const res = await fetch("https://imagens.bjeslee19.workers.dev/", {
+  const res = await fetch("https://imagens.bjeslee19.workers.dev/upload", {
     method: "POST",
     body: formData
   })
@@ -121,9 +103,6 @@ export async function uploadToCloudflare(file: File, metadata: UploadMetadata): 
   return data.imageId
 }
 
-/*  ╔══════════════════════════════════════╗
-    ║   6. DELETE SINGLE E MULTIPLE IMAGES  ║
-    ╚══════════════════════════════════════╝ */
 export async function deleteCloudflareImage(imageId: string): Promise<void> {
   if (!imageId || imageId.startsWith("http")) return
 

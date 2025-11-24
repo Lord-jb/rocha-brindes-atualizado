@@ -1,0 +1,3 @@
+CF_IMAGES_TOKEN = "SQb-Pbf4MHuqLFYM6uDj8_HlYsR7RMJ_zUCXGaqm"
+CF_ACCOUNT_ID = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+export CLOUDFLARE_API_TOKEN="SQb-Pbf4MHuqLFYM6uDj8_HlYsR7RMJ_zUCXGaqm"
