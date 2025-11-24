@@ -5,6 +5,7 @@ import tailwind from '@astrojs/tailwind'
 import sitemap from '@astrojs/sitemap'
 
 export default defineConfig({
+  output: 'server',
   // Domínio oficial do site (importante para gerar URLs absolutas no sitemap)
   site: 'https://rochabrindes.com',
 
