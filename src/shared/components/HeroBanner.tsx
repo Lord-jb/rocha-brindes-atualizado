@@ -27,7 +27,7 @@ export default function HeroBanner({ banners }: Props) {
   const goToNext = () => setCurrent(i => (i + 1) % banners.length)
 
   return (
-    <section className="mb-12 relative w-full rounded-3xl overflow-hidden bg-gray-200 shadow-card group">
+    <section className="mb-6 sm:mb-8 md:mb-12 relative w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-gray-200 shadow-card group">
       <div className="relative w-full">
         {banners.map((banner, i) => {
           const imageUrl = optimizeUrl(banner.url, 'public')
@@ -49,25 +49,25 @@ export default function HeroBanner({ banners }: Props) {
         <>
           <button
             onClick={goToPrevious}
-            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-dark p-2 sm:p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-dark p-1.5 sm:p-2 md:p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all z-10"
           >
-            <ChevronLeft size={20} className="sm:w-6 sm:h-6" strokeWidth={2.5} />
+            <ChevronLeft size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6" strokeWidth={2.5} />
           </button>
           
           <button
             onClick={goToNext}
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-dark p-2 sm:p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all z-10"
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-dark p-1.5 sm:p-2 md:p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all z-10"
           >
-            <ChevronRight size={20} className="sm:w-6 sm:h-6" strokeWidth={2.5} />
+            <ChevronRight size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6" strokeWidth={2.5} />
           </button>
 
-          <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 flex gap-2 sm:gap-3 bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full z-10">
+          <div className="absolute bottom-2 sm:bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-2 md:gap-3 bg-white/20 backdrop-blur-sm px-2.5 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-full z-10">
             {banners.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
                 className={`h-1.5 sm:h-2 rounded-full transition-all ${
-                  i === current ? 'bg-white w-6 sm:w-8' : 'bg-white/60 w-1.5 sm:w-2'
+                  i === current ? 'bg-white w-5 sm:w-6 md:w-8' : 'bg-white/60 w-1.5 sm:w-2'
                 }`}
               />
             ))}

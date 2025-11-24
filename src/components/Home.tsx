@@ -167,9 +167,9 @@ function HomeContent() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-gray-50 pt-4 md:pt-8">
-        <div className="container mx-auto px-4 pb-4">
-          <Suspense fallback={<div className="mb-8 h-48 md:h-56 rounded-2xl bg-gray-100 animate-pulse" />}>
+      <main className="min-h-screen bg-gray-50 pt-3 sm:pt-6">
+        <div className="container mx-auto px-3 sm:px-4 pb-4">
+          <Suspense fallback={<div className="mb-6 sm:mb-8 h-40 sm:h-48 md:h-56 rounded-2xl sm:rounded-3xl bg-gray-100 animate-pulse" />}>
             <HeroBanner banners={data?.layout.banners || []} />
           </Suspense>
 

@@ -4,7 +4,7 @@ import { optimizeUrl } from '../../core/lib/cloudflare'
 interface InfoSectionProps {
   title: string
   description: string
-  imageUrl?: string // recebe imageId
+  imageUrl?: string
   imagePosition?: 'left' | 'right'
   features?: string[]
 }
@@ -17,32 +17,30 @@ export default function InfoSection({
   features 
 }: InfoSectionProps) {
 
-  // SE vier imageId, transformamos na URL pública
   const optimizedImage = imageUrl ? optimizeUrl(imageUrl, 'public') : null
 
   return (
-    <section className="mb-16">
+    <section className="mb-8 sm:mb-12">
       <div className={`bg-white rounded-2xl shadow-card overflow-hidden ${
         imagePosition === 'left' ? 'md:flex-row-reverse' : ''
       }`}>
-        <div className="grid md:grid-cols-2 gap-8 items-center">
+        <div className="grid md:grid-cols-2 gap-0 items-center">
           
-          {/* Conteúdo de Texto */}
-          <div className={`p-8 md:p-12 ${imagePosition === 'left' ? 'md:order-2' : ''}`}>
-            <h2 className="text-2xl md:text-3xl font-title font-bold text-dark mb-6">
+          <div className={`p-5 sm:p-8 md:p-10 ${imagePosition === 'left' ? 'md:order-2' : ''}`}>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-title font-bold text-dark mb-4 sm:mb-6">
               {title}
             </h2>
 
-            <p className="text-gray-600 text-lg mb-6 leading-relaxed">
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-4 sm:mb-6 leading-relaxed">
               {description}
             </p>
 
             {features && features.length > 0 && (
-              <ul className="space-y-3">
+              <ul className="space-y-2 sm:space-y-3">
                 {features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
+                  <li key={idx} className="flex items-start gap-2 sm:gap-3">
                     <svg 
-                      className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" 
+                      className="w-5 h-5 sm:w-6 sm:h-6 text-primary flex-shrink-0 mt-0.5" 
                       fill="none" 
                       stroke="currentColor" 
                       viewBox="0 0 24 24"
@@ -50,15 +48,14 @@ export default function InfoSection({
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
 
-                    <span className="text-gray-700">{feature}</span>
+                    <span className="text-sm sm:text-base text-gray-700">{feature}</span>
                   </li>
                 ))}
               </ul>
             )}
           </div>
 
-          {/* Imagem vinda do Cloudflare */}
-          <div className={`relative h-64 md:h-full min-h-[400px] bg-gradient-to-br from-primary/10 to-accent/10 ${
+          <div className={`relative h-48 sm:h-64 md:h-full md:min-h-[350px] bg-gradient-to-br from-primary/10 to-accent/10 ${
             imagePosition === 'left' ? 'md:order-1' : ''
           }`}>
             {optimizedImage ? (
@@ -70,7 +67,7 @@ export default function InfoSection({
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <span className="text-8xl opacity-20">🎁</span>
+                <span className="text-6xl sm:text-7xl md:text-8xl opacity-20">🎁</span>
               </div>
             )}
           </div>
