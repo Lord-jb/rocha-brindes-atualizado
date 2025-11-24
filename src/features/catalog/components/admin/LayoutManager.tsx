@@ -1,6 +1,6 @@
 // src/features/catalog/components/admin/LayoutManager.tsx - CORREÇÃO
 import { useState, useEffect } from 'react'
-import { doc, setDoc, getDoc } from 'firebase/firestore'
+import { doc, setDoc, getDoc, deleteField } from 'firebase/firestore'
 import { uploadToCloudflare, optimizeUrl, deleteCloudflareImage } from '../../../../core/lib/cloudflare'
 import { db } from '../../../../core/lib/firebase'
 import { Upload, X, Loader2, Image as ImageIcon, Info, Phone, Settings } from 'lucide-react'
@@ -59,8 +59,22 @@ export default function LayoutManager() {
     }
   }
 
+  const sanitizeAssets = (data: LayoutAssets) => {
+    const clean: LayoutAssets = {}
+    if (data.logo) clean.logo = data.logo
+    if (data.companyInfo) {
+      const info: LayoutAssets['companyInfo'] = {}
+      if (data.companyInfo.title) info.title = data.companyInfo.title
+      if (data.companyInfo.description) info.description = data.companyInfo.description
+      if (info.title || info.description) clean.companyInfo = info
+    }
+    if (data.whatsapp) clean.whatsapp = data.whatsapp
+    return clean
+  }
+
   const saveAssets = async (data: LayoutAssets) => {
-    await setDoc(doc(db, 'config', 'layout'), data, { merge: true })
+    const clean = sanitizeAssets(data)
+    await setDoc(doc(db, 'config', 'layout'), clean, { merge: true })
   }
 
   const saveWhatsAppToGeneral = async (number: string) => {
@@ -125,12 +139,19 @@ export default function LayoutManager() {
 
   const removeLogo = async () => {
     if (!assets.logo) return
-    
+
     try {
       await deleteCloudflareImage(assets.logo)
-      const newAssets: LayoutAssets = { ...assets, logo: undefined }
-      await saveAssets(newAssets)
-      setAssets(newAssets)
+      await setDoc(
+        doc(db, 'config', 'layout'),
+        { logo: deleteField() },
+        { merge: true }
+      )
+      setAssets((prev) => {
+        const next = { ...prev }
+        delete next.logo
+        return next
+      })
       showMessage('Logo removido com sucesso!')
     } catch (error) {
       console.error(error)

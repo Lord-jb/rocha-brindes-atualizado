@@ -62,16 +62,16 @@ export default function Footer() {
   }, [])
 
   return (
-    <footer className="bg-white border-t border-gray-200 pt-16 pb-8">
+    <footer className="bg-black border-t border-gray-800 pt-16 pb-8 text-gray-200">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           
           {/* Coluna 1: Sobre a Empresa */}
           <div>
-            <h3 className="text-2xl font-title font-bold text-dark mb-4">
+            <h3 className="text-2xl font-title font-bold text-white mb-4">
               {data.companyName}
             </h3>
-            <p className="text-gray-600 leading-relaxed mb-6">
+            <p className="text-gray-300 leading-relaxed mb-6">
               {data.description}
             </p>
             <div className="flex gap-3">
@@ -80,7 +80,7 @@ export default function Footer() {
                   href={data.instagramUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2.5 bg-gray-100 rounded-full hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 hover:text-white transition-all text-gray-600"
+                  className="p-2.5 bg-gray-800 rounded-full hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 hover:text-white transition-all text-gray-200"
                   aria-label="Instagram"
                 >
                   <Instagram size={20} />
@@ -91,7 +91,7 @@ export default function Footer() {
                   href={data.facebookUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2.5 bg-gray-100 rounded-full hover:bg-blue-600 hover:text-white transition-all text-gray-600"
+                  className="p-2.5 bg-gray-800 rounded-full hover:bg-blue-600 hover:text-white transition-all text-gray-200"
                   aria-label="Facebook"
                 >
                   <Facebook size={20} />
@@ -102,7 +102,7 @@ export default function Footer() {
                   href={data.linkedinUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2.5 bg-gray-100 rounded-full hover:bg-blue-700 hover:text-white transition-all text-gray-600"
+                  className="p-2.5 bg-gray-800 rounded-full hover:bg-blue-700 hover:text-white transition-all text-gray-200"
                   aria-label="LinkedIn"
                 >
                   <Linkedin size={20} />
@@ -113,7 +113,7 @@ export default function Footer() {
                   href={data.youtubeUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="p-2.5 bg-gray-100 rounded-full hover:bg-red-600 hover:text-white transition-all text-gray-600"
+                  className="p-2.5 bg-gray-800 rounded-full hover:bg-red-600 hover:text-white transition-all text-gray-200"
                   aria-label="YouTube"
                 >
                   <Youtube size={20} />
@@ -124,8 +124,8 @@ export default function Footer() {
 
           {/* Coluna 2: Navegação */}
           <div>
-            <h4 className="font-bold text-lg mb-4 text-dark">{data.navigation.title}</h4>
-            <ul className="space-y-3 text-gray-600">
+            <h4 className="font-bold text-lg mb-4 text-white">{data.navigation.title}</h4>
+            <ul className="space-y-3 text-gray-300">
               {data.navigation.links.map((link, idx) => (
                 <li key={idx}>
                   <a 
@@ -142,8 +142,8 @@ export default function Footer() {
 
           {/* Coluna 3: Contato */}
           <div>
-            <h4 className="font-bold text-lg mb-4 text-dark">Contato</h4>
-            <ul className="space-y-4 text-gray-600">
+            <h4 className="font-bold text-lg mb-4 text-white">Contato</h4>
+            <ul className="space-y-4 text-gray-300">
               {data.address && (
                 <li className="flex items-start gap-3 group">
                   <MapPin className="text-primary shrink-0 mt-1 group-hover:scale-110 transition-transform" size={20} />
@@ -171,10 +171,10 @@ export default function Footer() {
         </div>
 
         {/* Rodapé inferior */}
-        <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
           <p>{data.copyright}</p>
           <p className="flex items-center gap-1">
-            Feito com <Heart size={14} className="text-red-500 fill-red-500 animate-pulse" /> pela <span className="font-bold text-dark">Império Lord</span>
+            Feito com <Heart size={14} className="text-red-500 fill-red-500 animate-pulse" /> pela <span className="font-bold text-white">Império Lord</span>
           </p>
         </div>
       </div>

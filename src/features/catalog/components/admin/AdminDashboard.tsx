@@ -8,6 +8,7 @@ import CategoryManager from './CategoryManager'
 import LayoutManager from './LayoutManager'
 import LandingManager from './LandingManager'
 import { LogOut, Package, Grid, Home, Settings, Menu, X } from 'lucide-react'
+import ProductZipImporter from './ProductZipImporter'
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'products' | 'categories' | 'landing' | 'config'>('products')
@@ -86,6 +87,7 @@ export default function AdminDashboard() {
       <main className="container mx-auto px-4 py-6 lg:py-8">
         {activeTab === 'products' && (
           <div className="space-y-6 lg:space-y-8">
+            <ProductZipImporter />
             <ProductForm />
             <ProductList />
           </div>

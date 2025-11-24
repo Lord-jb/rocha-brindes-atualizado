@@ -94,6 +94,15 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
             ← Deslize para ver mais produtos →
           </p>
         </div>
+
+        <div className="text-center mt-6">
+          <a
+            href="/catalogo"
+            className="inline-block bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-xl font-semibold text-sm md:text-base transition-all shadow-lg hover:shadow-xl"
+          >
+            Ver catálogo completo
+          </a>
+        </div>
       </div>
     </section>
   )
