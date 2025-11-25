@@ -18,7 +18,7 @@ export default function Header({ showBackButton = false }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 bg-black shadow-md border-b border-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
+        <div className="relative flex items-center justify-between h-16 sm:h-20">
           {/* Back Button ou Espaço vazio */}
           <div className="w-10 sm:w-12">
             {showBackButton && (
@@ -33,7 +33,14 @@ export default function Header({ showBackButton = false }: HeaderProps) {
           </div>
 
           {/* Logo */}
-          <a href="/" className="flex items-center">
+          <a 
+            href="/" 
+            className={`flex items-center ${
+              showBackButton 
+                ? 'absolute left-1/2 -translate-x-1/2 sm:static sm:translate-x-0' 
+                : ''
+            }`}
+          >
             {isLoading || !logoUrl ? (
               <div className="h-10 sm:h-14 md:h-16 w-32 sm:w-48 md:w-64 bg-gray-200 animate-pulse rounded" />
             ) : (

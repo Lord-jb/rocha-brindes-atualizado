@@ -20,6 +20,7 @@ interface CatalogData {
   products: Product[]
   categories: Category[]
   layout: LayoutConfig
+  whatsapp?: string
 }
 
 export function useCatalog(productLimit = 6) {
