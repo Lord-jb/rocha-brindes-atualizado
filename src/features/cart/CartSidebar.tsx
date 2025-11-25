@@ -1,6 +1,6 @@
 // FILE: src/features/cart/CartSidebar.tsx
 import { useState, useEffect } from 'react'
-import { X, Trash2, Send, ShoppingCart, Plus, Minus } from 'lucide-react'
+import { X, Trash2, Send, ShoppingBag, Plus, Minus } from 'lucide-react'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../../core/lib/firebase'
 import { useCart } from '../../core/store/cart'
@@ -117,7 +117,7 @@ export default function CartSidebar() {
             {items.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-                  <ShoppingCart size={32} className="sm:w-10 sm:h-10 text-gray-400" />
+                  <ShoppingBag size={32} className="sm:w-10 sm:h-10 text-gray-400" />
                 </div>
                 <p className="text-gray-500 font-medium text-sm sm:text-base">Nenhum produto adicionado</p>
                 <p className="text-xs sm:text-sm text-gray-400 mt-2">Adicione produtos para solicitar um orçamento</p>

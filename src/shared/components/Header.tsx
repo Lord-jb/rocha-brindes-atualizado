@@ -1,10 +1,14 @@
-// src/shared/components/Header.tsx - ATUALIZAR
-import { ShoppingBag } from 'lucide-react'
+// FILE: src/shared/components/Header.tsx
+import { ShoppingBag, ArrowLeft } from 'lucide-react'
 import { useCart } from '../../core/store/cart'
 import { useCatalog } from '../../core/hooks/useCatalog'
 import { optimizeUrl } from '../../core/lib/cloudflare'
 
-export default function Header() {
+interface HeaderProps {
+  showBackButton?: boolean
+}
+
+export default function Header({ showBackButton = false }: HeaderProps) {
   const { count, toggle } = useCart()
   const { data, isLoading } = useCatalog()
   
@@ -15,6 +19,20 @@ export default function Header() {
     <header className="sticky top-0 z-40 bg-black shadow-md border-b border-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
+          {/* Back Button ou Espaço vazio */}
+          <div className="w-10 sm:w-12">
+            {showBackButton && (
+              <a
+                href="/"
+                className="flex items-center justify-center p-2 hover:bg-white/10 rounded-lg transition-colors"
+                aria-label="Voltar"
+              >
+                <ArrowLeft size={20} className="text-white" strokeWidth={2.5} />
+              </a>
+            )}
+          </div>
+
+          {/* Logo */}
           <a href="/" className="flex items-center">
             {isLoading || !logoUrl ? (
               <div className="h-10 sm:h-14 md:h-16 w-32 sm:w-48 md:w-64 bg-gray-200 animate-pulse rounded" />
@@ -28,6 +46,7 @@ export default function Header() {
             )}
           </a>
           
+          {/* Cart Button */}
           <button 
             onClick={toggle} 
             className="relative p-2.5 sm:p-3 bg-primary hover:bg-primary-dark text-white rounded-full transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105" 

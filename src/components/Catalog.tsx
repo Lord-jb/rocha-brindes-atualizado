@@ -6,7 +6,7 @@ import { preloadCriticalImages } from '../core/lib/cloudflare'
 import Header from '../shared/components/Header'
 import Providers from './Providers'
 import type { Product } from '../types/product'
-import { ChevronLeft, ChevronRight, MessageCircle, Search } from 'lucide-react'
+import { ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../core/lib/firebase'
 
@@ -115,31 +115,29 @@ function CatalogContent() {
     if (totalPages <= 1) return null
 
     return (
-      <div className="mt-8 mb-6 flex flex-col sm:flex-row items-center justify-center gap-3">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => handlePageChange(page - 1)}
-            disabled={page === 0}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white border-2 border-gray-300 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 hover:border-primary transition-all font-medium text-xs sm:text-sm"
-          >
-            <ChevronLeft size={16} />
-            <span className="hidden sm:inline">Anterior</span>
-          </button>
+      <div className="mt-8 mb-6 flex items-center justify-center gap-2">
+        <button
+          onClick={() => handlePageChange(page - 1)}
+          disabled={page === 0}
+          className="flex items-center gap-1.5 px-3 py-2 bg-white border-2 border-gray-300 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 hover:border-primary transition-all font-medium text-xs sm:text-sm"
+        >
+          <ChevronLeft size={16} />
+          <span className="hidden sm:inline">Anterior</span>
+        </button>
 
-          <span className="text-xs sm:text-sm text-gray-600 font-medium px-2">
-            <span className="font-bold text-primary">{page + 1}</span> de{' '}
-            <span className="font-bold">{totalPages}</span>
-          </span>
+        <span className="text-xs sm:text-sm text-gray-600 font-medium px-2">
+          <span className="font-bold text-primary">{page + 1}</span> de{' '}
+          <span className="font-bold">{totalPages}</span>
+        </span>
 
-          <button
-            onClick={() => handlePageChange(page + 1)}
-            disabled={page >= totalPages - 1}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white border-2 border-gray-300 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 hover:border-primary transition-all font-medium text-xs sm:text-sm"
-          >
-            <span className="hidden sm:inline">Próxima</span>
-            <ChevronRight size={16} />
-          </button>
-        </div>
+        <button
+          onClick={() => handlePageChange(page + 1)}
+          disabled={page >= totalPages - 1}
+          className="flex items-center gap-1.5 px-3 py-2 bg-white border-2 border-gray-300 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 hover:border-primary transition-all font-medium text-xs sm:text-sm"
+        >
+          <span className="hidden sm:inline">Próxima</span>
+          <ChevronRight size={16} />
+        </button>
       </div>
     )
   }
@@ -149,9 +147,9 @@ function CatalogContent() {
 
   return (
     <>
-      <Header />
-      <main className="min-h-screen bg-gray-50 pt-3 sm:pt-6">
-        <div className="container mx-auto px-3 sm:px-4 pb-4">
+      <Header showBackButton={true} />
+      <main className="min-h-screen bg-gray-50 pt-3 sm:pt-6 pb-20 lg:pb-4">
+        <div className="container mx-auto px-3 sm:px-4">
           <div className="grid lg:grid-cols-[280px_1fr] gap-6">
             <Suspense fallback={null}>
               <CategorySidebar
@@ -163,36 +161,7 @@ function CatalogContent() {
               />
             </Suspense>
 
-            <div>
-              {isMobileGrid && (
-                <div className="md:hidden mb-4 space-y-2">
-                  <div className="flex items-center gap-2 bg-white rounded-full border border-gray-200 px-3 py-2 shadow-sm">
-                    <Search size={16} className="text-gray-500" />
-                    <input
-                      type="text"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Buscar produtos ou SKUs"
-                      className="flex-1 bg-transparent outline-none text-sm"
-                    />
-                  </div>
-                  <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
-                    {['Todos', ...categoriesList].map((cat) => (
-                      <button
-                        key={cat}
-                        onClick={() => setCategory(cat)}
-                        className={`whitespace-nowrap px-2.5 py-1.5 rounded-full border text-[10px] font-medium ${
-                          category === cat
-                            ? 'bg-primary text-white border-primary'
-                            : 'bg-white text-gray-700 border-gray-200'
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+            <div className="min-w-0">
               {categoryInfo && (categoryInfo.descricao || categoryInfo.videoUrl) && (
                 <div className="mb-6 bg-white rounded-2xl shadow-card overflow-hidden">
                   {categoryInfo.videoUrl && (
@@ -230,14 +199,6 @@ function CatalogContent() {
                 </div>
               ) : (
                 <>
-                  <div className="mb-3 flex items-center justify-between text-xs sm:text-sm text-gray-600">
-                    <p>
-                      <span className="font-semibold">{page * pageSize + 1}</span> -{' '}
-                      <span className="font-semibold">{Math.min((page + 1) * pageSize, filtered.length)}</span> de{' '}
-                      <span className="font-semibold">{filtered.length}</span> {filtered.length === 1 ? 'produto' : 'produtos'}
-                    </p>
-                  </div>
-
                   <Suspense fallback={skeleton}>
                     <ProductGrid products={paginatedProducts} onView={setSelected} onAdd={add} />
                   </Suspense>
@@ -252,7 +213,7 @@ function CatalogContent() {
 
       <button
         onClick={handleWhatsApp}
-        className="fixed bottom-16 right-4 bg-green-500 hover:bg-green-600 text-white p-3 sm:p-4 rounded-full shadow-2xl hover:scale-110 transition-all z-40"
+        className="fixed bottom-20 lg:bottom-6 right-4 bg-green-500 hover:bg-green-600 text-white p-3 sm:p-4 rounded-full shadow-2xl hover:scale-110 transition-all z-40"
         aria-label="Contato WhatsApp"
       >
         <MessageCircle size={24} />
@@ -263,21 +224,6 @@ function CatalogContent() {
         <CartSidebar />
         <Footer />
       </Suspense>
-
-      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 py-6 px-4 mt-6">
-        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
-          <div>
-            <h3 className="text-base md:text-lg font-title font-bold text-dark">Precisa de ajuda rápida?</h3>
-            <p className="text-xs sm:text-sm text-gray-600">Use os filtros e a busca ou fale conosco pelo WhatsApp.</p>
-          </div>
-          <button
-            onClick={handleWhatsApp}
-            className="px-4 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-md font-semibold text-xs sm:text-sm transition-all"
-          >
-            Abrir WhatsApp
-          </button>
-        </div>
-      </div>
     </>
   )
 }

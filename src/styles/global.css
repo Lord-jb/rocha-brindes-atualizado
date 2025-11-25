@@ -1,4 +1,4 @@
-/* FILE: src/styles/global.css */
+/* FILE: src/styles/global.css - ADICIONE/ATUALIZE */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -21,62 +21,17 @@
       scroll-behavior: auto;
     }
   }
-}
 
-@layer utilities {
-  .break-words {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word;
-    hyphens: auto;
-  }
-
-  .scrollbar-thin {
-    scrollbar-width: thin;
-  }
-
-  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
-    background-color: rgb(209 213 219);
-    border-radius: 9999px;
-  }
-
-  .scrollbar-track-gray-100::-webkit-scrollbar-track {
-    background-color: rgb(243 244 246);
-    border-radius: 9999px;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-}
-
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-
-@layer base {
-  * {
-    @apply antialiased;
-  }
-  
-  body {
-    @apply bg-light text-dark;
-  }
-
-  html {
-    scroll-behavior: smooth;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
+  /* Previne zoom ao focar em inputs no iOS */
+  @supports (-webkit-touch-callout: none) {
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    textarea,
+    select {
+      font-size: 16px !important;
     }
   }
 }
@@ -89,7 +44,6 @@
     hyphens: auto;
   }
 
-  /* Scrollbar personalizada */
   .scrollbar-thin {
     scrollbar-width: thin;
   }
@@ -107,6 +61,50 @@
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
     height: 6px;
+  }
+
+  /* Suporte para telas muito pequenas */
+  @media (min-width: 360px) {
+    .xs\:w-14 {
+      width: 3.5rem;
+    }
+    .xs\:h-14 {
+      height: 3.5rem;
+    }
+    .xs\:w-16 {
+      width: 4rem;
+    }
+    .xs\:h-220px {
+      height: 220px;
+    }
+    .xs\:p-4 {
+      padding: 1rem;
+    }
+    .xs\:grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* Melhorias de scroll para mobile */
+  .overscroll-contain {
+    overscroll-behavior: contain;
+  }
+  
+  .overscroll-x-contain {
+    overscroll-behavior-x: contain;
+  }
+
+  /* Touch optimization */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+
+  /* Scrollbar customizada mais fina para mobile */
+  @media (max-width: 640px) {
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
   }
 
   /* Animação do Carrossel Infinito */
@@ -126,9 +124,7 @@
   .pause-animation:hover {
     animation-play-state: paused;
   }
-}
 
-@layer utilities {
   .animate-slide-in {
     animation: slide-in 0.3s ease-out;
   }

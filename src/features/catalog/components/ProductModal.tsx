@@ -1,5 +1,5 @@
 // FILE: src/features/catalog/components/ProductModal.tsx
-import { useState, useMemo, memo } from 'react'
+import { useState, useMemo, memo, useEffect, useRef } from 'react'
 import { X, ShoppingCart, Plus, Minus, Package, Tag, ChevronDown, ChevronUp } from 'lucide-react'
 import { optimizeUrl } from '../../../core/lib/cloudflare'
 import { useCart } from '../../../core/store/cart'
@@ -22,6 +22,7 @@ export default memo(function ProductModal({ product, onClose }: Props) {
   const [quantityInput, setQuantityInput] = useState('1')
   const [selectedColor, setSelectedColor] = useState<string>('')
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const gallery = useMemo<GalleryItem[]>(() => {
     const items: GalleryItem[] = []
@@ -91,8 +92,8 @@ export default memo(function ProductModal({ product, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4">
-      <div className="relative bg-white rounded-t-3xl sm:rounded-2xl w-full sm:max-w-4xl max-h-[99vh] overflow-hidden shadow-2xl flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4 sm:py-8">
+      <div className="relative bg-white rounded-t-3xl sm:rounded-2xl w-full sm:max-w-4xl max-h-[95vh] sm:max-h-[calc(100vh-4rem)] overflow-hidden shadow-2xl flex flex-col my-auto">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-gray-700 rounded-full p-2 z-10 hover:bg-white shadow-lg transition-all"
@@ -100,8 +101,11 @@ export default memo(function ProductModal({ product, onClose }: Props) {
           <X size={18} />
         </button>
 
-        <div className="flex-1 overflow-y-auto overscroll-contain">
-          {/* Imagem Principal - Compacta no mobile */}
+        <div 
+          ref={scrollContainerRef}
+          className="flex-1 overflow-y-auto overscroll-contain"
+        >
+          {/* Imagem Principal */}
           <div className="bg-white flex items-center justify-center flex-shrink-0">
             {active && (
               <img
@@ -113,7 +117,7 @@ export default memo(function ProductModal({ product, onClose }: Props) {
             )}
           </div>
 
-          {/* Thumbnails - Compactas */}
+          {/* Thumbnails */}
           {gallery.length > 1 && (
             <div className="border-t border-gray-200 bg-white px-2 sm:px-3 py-2 flex gap-1.5 sm:gap-2 overflow-x-auto overscroll-x-contain scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
               {gallery.map((item, idx) => (
@@ -138,9 +142,9 @@ export default memo(function ProductModal({ product, onClose }: Props) {
             </div>
           )}
 
-          {/* Conteúdo - Compacto com scroll interno */}
+          {/* Conteúdo */}
           <div className="p-3 xs:p-4 sm:p-5 md:p-6 space-y-3 sm:space-y-4">
-            {/* Header do Produto com botão de expandir descrição */}
+            {/* Header do Produto */}
             <div>
               <div className="flex items-start gap-2 mb-2">
                 <div className="p-1.5 bg-primary/10 rounded-lg flex-shrink-0">
@@ -152,7 +156,6 @@ export default memo(function ProductModal({ product, onClose }: Props) {
                       {product.nome}
                     </h2>
                     
-                    {/* Botão de expandir descrição - apenas se houver descrição */}
                     {product.descricao && (
                       <button
                         type="button"
@@ -202,7 +205,7 @@ export default memo(function ProductModal({ product, onClose }: Props) {
               </div>
             )}
 
-            {/* Seleção de Cores - Grid responsivo */}
+            {/* Seleção de Cores */}
             {product.variacoes?.length ? (
               <div>
                 <div className="flex items-center gap-2 mb-2">
@@ -217,7 +220,7 @@ export default memo(function ProductModal({ product, onClose }: Props) {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2 max-h-[180px] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 pr-1">
+                <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2 max-h-[100px] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 pr-1">
                   {product.variacoes?.map(v => {
                     const isActive = selectedColor === v.cor
                     return (
@@ -250,7 +253,7 @@ export default memo(function ProductModal({ product, onClose }: Props) {
               </div>
             ) : null}
 
-            {/* Quantidade - Permite digitação livre */}
+            {/* Quantidade */}
             <div>
               <label className="block text-xs sm:text-sm font-bold text-gray-900 mb-2">
                 Quantidade
