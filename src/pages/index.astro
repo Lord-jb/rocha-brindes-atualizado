@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Home from '../components/Home';
+import Home from '../components/Home.solid';
 
 const schema = JSON.stringify({
   "@context": "https://schema.org",
@@ -57,5 +57,5 @@ const schema = JSON.stringify({
 
 <Layout>
   <script type="application/ld+json" set:html={schema} />
-  <Home client:only="react" />
+  <Home client:only="solid-js" />
 </Layout>

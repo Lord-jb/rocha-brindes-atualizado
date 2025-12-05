@@ -1,3 +1,45 @@
-CF_IMAGES_TOKEN = "SQb-Pbf4MHuqLFYM6uDj8_HlYsR7RMJ_zUCXGaqm"
-CF_ACCOUNT_ID = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-export CLOUDFLARE_API_TOKEN="SQb-Pbf4MHuqLFYM6uDj8_HlYsR7RMJ_zUCXGaqm"
+#:schema node_modules/wrangler/config-schema.json
+name = "rocha-brindes"
+compatibility_date = "2024-12-05"
+pages_build_output_dir = "./dist"
+
+# D1 Database Bindings
+[[d1_databases]]
+binding = "DB"
+database_name = "rocha-brindes-db"
+database_id = "your-database-id" # Será preenchido após criar o banco
+
+# R2 Bucket Bindings
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "rocha-brindes-images"
+
+# KV Namespaces (para cache e sessões)
+[[kv_namespaces]]
+binding = "CACHE"
+id = "your-kv-id"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "your-sessions-kv-id"
+
+# Environment Variables
+[vars]
+ENVIRONMENT = "production"
+CLOUDFLARE_ACCOUNT_HASH = "iem94FVEkj3Qjv3DsJXpbQ"
+
+# Workers Routes (para API)
+[routes]
+pattern = "/api/*"
+custom_domain = true
+
+# Build configuration
+[build]
+command = "npm run build"
+
+[build.upload]
+format = "service-worker"
+
+# Development
+[dev]
+port = 8787
