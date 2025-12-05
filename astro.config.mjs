@@ -1,41 +1,60 @@
 // FILE: astro.config.mjs
-import { defineConfig } from 'astro/config'
-import react from '@astrojs/react'
-import tailwind from '@astrojs/tailwind'
-import sitemap from '@astrojs/sitemap'
+import { defineConfig } from 'astro/config';
+import solidJs from '@astrojs/solid-js';
+import tailwind from '@astrojs/tailwind';
+import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   output: 'static',
-  // Domínio oficial do site (importante para gerar URLs absolutas no sitemap)
   site: 'https://rochabrindes.com',
 
-  // Integrações do projeto
   integrations: [
-    react(),
+    solidJs(),
     tailwind({
       applyBaseStyles: false,
     }),
-
-    // Força a criação de /sitemap.xml ao invés de sitemap-index.xml
     sitemap({
       entryPoint: '/sitemap.xml'
     })
   ],
 
-  // Geração totalmente estática para o Cloudflare Pages
-  output: 'static',
-
-  // Configurações do Vite
   vite: {
     resolve: {
       alias: {
         '@': '/src'
       }
     },
-
-    // Importante: React Query precisa ser incluído no bundle SSR
     ssr: {
-      noExternal: ['@tanstack/react-query']
+      noExternal: ['@tanstack/solid-query']
+    },
+    build: {
+      // Otimizações para mobile
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          passes: 2
+        }
+      },
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor': ['solid-js'],
+            'query': ['@tanstack/solid-query'],
+          }
+        }
+      }
     }
+  },
+
+  // Otimizações de build
+  build: {
+    inlineStylesheets: 'auto',
+  },
+
+  // Prefetch para melhor performance
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'viewport'
   }
-})
+});
