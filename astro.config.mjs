@@ -1,11 +1,18 @@
 // FILE: astro.config.mjs
 import { defineConfig } from 'astro/config';
+import cloudflare from '@astrojs/cloudflare';
 import solidJs from '@astrojs/solid-js';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  output: 'static',
+  output: 'server',
+  adapter: cloudflare({
+    platformProxy: {
+      enabled: true
+    }
+  }),
+
   site: 'https://rochabrindes.com',
 
   integrations: [
@@ -13,9 +20,7 @@ export default defineConfig({
     tailwind({
       applyBaseStyles: false,
     }),
-    sitemap({
-      entryPoint: '/sitemap.xml'
-    })
+    sitemap()
   ],
 
   vite: {
@@ -50,11 +55,5 @@ export default defineConfig({
   // Otimizações de build
   build: {
     inlineStylesheets: 'auto',
-  },
-
-  // Prefetch para melhor performance
-  prefetch: {
-    prefetchAll: true,
-    defaultStrategy: 'viewport'
   }
 });
