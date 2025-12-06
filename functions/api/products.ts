@@ -1,9 +1,9 @@
 // API endpoint para produtos
-import type { PagesFunction } from '@cloudflare/workers-types';
+import type { EventContext } from '@cloudflare/workers-types';
 import { getProducts, getProductById, createProduct, updateProduct, deleteProduct } from './db';
-import type { Env } from './types';
+import type { Env, Product } from './types';
 
-export const onRequestGet: PagesFunction<Env> = async ({ request, env, params }) => {
+export const onRequestGet = async ({ request, env, params }: EventContext<Env, any, Record<string, any>>) => {
   const url = new URL(request.url);
   const id = params.id as string | undefined;
 
@@ -39,10 +39,10 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env, params })
   }
 };
 
-export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
+export const onRequestPost = async ({ request, env }: EventContext<Env, any, Record<string, any>>) => {
   try {
     // TODO: Adicionar verificação de autenticação
-    const body = await request.json();
+    const body = await request.json() as Partial<Product>;
     const product = await createProduct(env, body);
 
     return new Response(JSON.stringify(product), {
@@ -57,7 +57,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   }
 };
 
-export const onRequestPut: PagesFunction<Env> = async ({ request, env, params }) => {
+export const onRequestPut = async ({ request, env, params }: EventContext<Env, any, Record<string, any>>) => {
   try {
     // TODO: Adicionar verificação de autenticação
     const id = params.id as string;
@@ -68,7 +68,7 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
       });
     }
 
-    const body = await request.json();
+    const body = await request.json() as Partial<Product>;
     const product = await updateProduct(env, id, body);
 
     return new Response(JSON.stringify(product), {
@@ -82,7 +82,7 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
   }
 };
 
-export const onRequestDelete: PagesFunction<Env> = async ({ request, env, params }) => {
+export const onRequestDelete = async ({ env, params }: EventContext<Env, any, Record<string, any>>) => {
   try {
     // TODO: Adicionar verificação de autenticação
     const id = params.id as string;

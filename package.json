@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
-    "@astrojs/cloudflare": "^11.1.2",
+    "@astrojs/cloudflare": "^12.0.0",
     "@astrojs/sitemap": "^3.6.0",
     "@astrojs/solid-js": "^4.4.1",
     "@astrojs/tailwind": "^6.0.2",
@@ -30,6 +30,7 @@
     "astro": "^5.16.0",
     "firebase-admin": "^13.0.1",
     "node-fetch": "^3.3.2",
+    "terser": "^5.44.1",
     "typescript": "^5.7.2",
     "wrangler": "^3.87.0"
   }

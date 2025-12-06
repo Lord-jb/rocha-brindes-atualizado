@@ -1,9 +1,9 @@
 // API endpoint para catálogo completo (produtos + categorias + layout)
-import type { PagesFunction } from '@cloudflare/workers-types';
+import type { EventContext } from '@cloudflare/workers-types';
 import { getProducts, getCategories, getLayoutConfig } from './db';
 import type { Env } from './types';
 
-export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
+export const onRequestGet = async ({ request, env }: EventContext<Env, any, Record<string, any>>) => {
   const url = new URL(request.url);
   const limit = parseInt(url.searchParams.get('limit') || '100');
 
