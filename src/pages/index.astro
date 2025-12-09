@@ -5,11 +5,25 @@ import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 
 // Buscar dados do catálogo
-const catalogUrl = new URL('/api/catalog?limit=8', Astro.url.origin);
-const response = await fetch(catalogUrl.toString());
-const data = await response.json();
+let featured_products = [];
+let categories = [];
+let settings = {};
 
-const { featured_products = [], categories = [], settings = {} } = data;
+try {
+  const catalogUrl = new URL('/api/catalog?limit=8', Astro.url.origin);
+  const response = await fetch(catalogUrl.toString());
+
+  if (response.ok) {
+    const data = await response.json();
+    featured_products = data.featured_products || [];
+    categories = data.categories || [];
+    settings = data.settings || {};
+  } else {
+    console.error('Failed to fetch catalog:', response.status, response.statusText);
+  }
+} catch (error) {
+  console.error('Error fetching catalog:', error);
+}
 ---
 
 <Layout
