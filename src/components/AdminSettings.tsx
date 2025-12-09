@@ -59,15 +59,15 @@ export default function AdminSettings(props: Props) {
           />
         </div>
 
-        {/* Company Description */}
+        {/* Description */}
         <div>
-          <label for="company_description" class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
             Descrição da Empresa
           </label>
           <textarea
-            id="company_description"
-            value={formData().company_description || ''}
-            onInput={(e) => updateField('company_description', e.currentTarget.value)}
+            id="description"
+            value={formData().description || ''}
+            onInput={(e) => updateField('description', e.currentTarget.value)}
             rows="4"
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             placeholder="Especializada em brindes personalizados de alta qualidade..."
@@ -77,28 +77,28 @@ export default function AdminSettings(props: Props) {
         {/* Contact Information */}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label for="company_email" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
               Email
             </label>
             <input
               type="email"
-              id="company_email"
-              value={formData().company_email || ''}
-              onInput={(e) => updateField('company_email', e.currentTarget.value)}
+              id="email"
+              value={formData().email || ''}
+              onInput={(e) => updateField('email', e.currentTarget.value)}
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               placeholder="contato@rochabrindes.com"
             />
           </div>
 
           <div>
-            <label for="company_phone" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
               Telefone
             </label>
             <input
               type="tel"
-              id="company_phone"
-              value={formData().company_phone || ''}
-              onInput={(e) => updateField('company_phone', e.currentTarget.value)}
+              id="phone"
+              value={formData().phone || ''}
+              onInput={(e) => updateField('phone', e.currentTarget.value)}
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               placeholder="(96) 98124-7830"
             />
@@ -107,14 +107,14 @@ export default function AdminSettings(props: Props) {
 
         {/* Address */}
         <div>
-          <label for="company_address" class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
             Endereço
           </label>
           <input
             type="text"
-            id="company_address"
-            value={formData().company_address || ''}
-            onInput={(e) => updateField('company_address', e.currentTarget.value)}
+            id="address"
+            value={formData().address || ''}
+            onInput={(e) => updateField('address', e.currentTarget.value)}
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             placeholder="Macapá, AP"
           />
