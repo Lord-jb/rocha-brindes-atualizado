@@ -1,20 +1,22 @@
 // API endpoint para upload de imagens no R2
-import type { PagesFunction } from '@cloudflare/workers-types';
+import type { EventContext } from '@cloudflare/workers-types';
 import type { Env } from './types';
 
-export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
+export const onRequestPost = async ({ request, env }: EventContext<Env, any, Record<string, any>>) => {
   try {
     // TODO: Adicionar verificação de autenticação
 
     const formData = await request.formData();
-    const file = formData.get('file') as File;
+    const fileEntry = formData.get('file');
 
-    if (!file) {
+    if (!fileEntry || typeof fileEntry === 'string') {
       return new Response(JSON.stringify({ error: 'No file provided' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
     }
+
+    const file = fileEntry as File;
 
     // Gerar ID único para a imagem
     const imageId = crypto.randomUUID();
@@ -53,11 +55,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   }
 };
 
-export const onRequestDelete: PagesFunction<Env> = async ({ request, env }) => {
+export const onRequestDelete = async ({ request, env }: EventContext<Env, any, Record<string, any>>) => {
   try {
     // TODO: Adicionar verificação de autenticação
 
-    const { imageId } = await request.json();
+    const body = await request.json() as { imageId?: string };
+    const imageId = body.imageId;
 
     if (!imageId) {
       return new Response(JSON.stringify({ error: 'No imageId provided' }), {
