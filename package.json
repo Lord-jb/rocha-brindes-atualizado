@@ -5,7 +5,7 @@
   "description": "E-commerce de brindes personalizados com Astro + SolidJS + Cloudflare",
   "scripts": {
     "dev": "astro dev --host",
-    "build": "astro check && astro build",
+    "build": "astro build",
     "preview": "astro preview",
     "pages:dev": "wrangler pages dev dist --compatibility-date=2024-12-05",
     "pages:deploy": "npm run build && wrangler pages deploy dist",

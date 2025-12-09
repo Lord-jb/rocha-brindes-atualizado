@@ -1,58 +1,35 @@
-#:schema node_modules/wrangler/config-schema.json
 name = "rocha-brindes"
 compatibility_date = "2024-12-05"
 pages_build_output_dir = "./dist"
 
-# ==========================================
-# CLOUDFLARE D1 DATABASE
-# ==========================================
 [[d1_databases]]
 binding = "DB"
 database_name = "rocha-brindes-db"
-database_id = "" # Preencher após criar: wrangler d1 create rocha-brindes-db
+database_id = "642b162f-746c-4851-a32e-fce92cb9b822"
 
-# ==========================================
-# CLOUDFLARE R2 STORAGE (IMAGENS)
-# ==========================================
+# Ambiente de desenvolvimento (pages dev)
+[env.dev]
+[[env.dev.d1_databases]]
+binding = "DB"
+database_name = "rocha-brindes-db"
+database_id = "642b162f-746c-4851-a32e-fce92cb9b822"
+
 [[r2_buckets]]
-binding = "R2"
+binding = "IMAGES"
 bucket_name = "rocha-brindes-images"
-preview_bucket_name = "rocha-brindes-images-dev"
 
-# ==========================================
-# CLOUDFLARE KV (CACHE E SESSÕES)
-# ==========================================
+# Substitua os IDs por dois namespaces diferentes
 [[kv_namespaces]]
 binding = "CACHE"
-id = "" # Preencher após criar: wrangler kv:namespace create CACHE
-preview_id = "" # Para desenvolvimento
+id = "8588158aea99464db6bd56cb0ec36c99"
 
 [[kv_namespaces]]
 binding = "SESSIONS"
-id = "" # Preencher após criar: wrangler kv:namespace create SESSIONS
-preview_id = "" # Para desenvolvimento
+id = "fa6b9f1fe18d466989a2b6e611ca4a84"
 
-# ==========================================
-# VARIÁVEIS DE AMBIENTE
-# ==========================================
 [vars]
 ENVIRONMENT = "production"
-BASE_URL = "https://rochabrindes.com.br"
-WHATSAPP_NUMBER = "5596981247830"
-ADMIN_EMAIL = "rochabrindes29@gmail.com"
+WHATSAPP_NUMBER = "+5589994333316"
 
-# ==========================================
-# CONFIGURAÇÃO DE BUILD
-# ==========================================
-[build]
-command = "npm run build"
-
-[build.upload]
-format = "service-worker"
-
-# ==========================================
-# CONFIGURAÇÃO DE DESENVOLVIMENTO
-# ==========================================
 [dev]
-port = 8788
-local_protocol = "http"
+port = 8787
