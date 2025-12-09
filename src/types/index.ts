@@ -212,10 +212,13 @@ export interface Cart {
 // ==========================================
 
 export interface CheckoutFormData {
-  customer_name: string;
-  customer_email?: string;
-  customer_whatsapp: string;
-  customer_address?: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
   notes?: string;
 }
 

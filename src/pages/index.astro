@@ -1,61 +1,138 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Home from '../components/Home.solid';
+import Layout from '@/layouts/Layout.astro';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import ProductCard from '@/components/ProductCard';
 
-const schema = JSON.stringify({
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://rochabrindes.com/#organization",
-      "name": "Rocha Brindes",
-      "url": "https://rochabrindes.com",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://rochabrindes.com/favicon-light.png",
-        "width": 512,
-        "height": 512
-      },
-      "image": "https://rochabrindes.com/favicon-light.png",
-      "description": "Líder em brindes personalizados corporativos. Canetas, garrafas, kits executivos e tecnologia para sua empresa.",
-      "telephone": "+55-89-99433-3316",
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "BR"
-      },
-      "priceRange": "$$",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+55-89-99433-3316",
-        "contactType": "sales",
-        "areaServed": "BR",
-        "availableLanguage": "Portuguese"
-      },
-      "sameAs": [
-        "https://instagram.com/rochabrindes",
-        "https://facebook.com/rochabrindes"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://rochabrindes.com/#website",
-      "url": "https://rochabrindes.com",
-      "name": "Rocha Brindes - Catálogo Oficial",
-      "publisher": {
-        "@id": "https://rochabrindes.com/#organization"
-      },
-      "inLanguage": "pt-BR",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://rochabrindes.com/?search={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-  ]
-});
+// Buscar dados do catálogo
+const catalogUrl = new URL('/api/catalog?limit=8', Astro.url.origin);
+const response = await fetch(catalogUrl.toString());
+const data = await response.json();
+
+const { featured_products = [], categories = [], settings = {} } = data;
 ---
 
-<Layout>
-  <script type="application/ld+json" set:html={schema} />
-  <Home client:only="solid-js" />
+<Layout
+  title={settings.meta_title || 'Rocha Brindes - Brindes Personalizados'}
+  description={settings.meta_description || settings.description}
+>
+  <Header client:load />
+
+  <main class="flex-1">
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-20 md:py-32">
+      <div class="container">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div class="space-y-6 hero-text">
+            <h1 class="text-4xl md:text-6xl font-display font-bold text-gray-900 leading-tight">
+              Brindes Personalizados de
+              <span class="text-gradient">Alta Qualidade</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-gray-600 leading-relaxed">
+              Impressione seus clientes com brindes únicos e personalizados. Qualidade garantida e
+              entrega rápida.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+              <a href="/loja" class="btn btn-primary btn-lg">Ver Catálogo</a>
+              <a
+                href={`https://wa.me/${settings.whatsapp_number || '5596981247830'}?text=Olá! Gostaria de fazer um orçamento.`}
+                target="_blank"
+                class="btn btn-outline btn-lg"
+              >
+                Falar no WhatsApp
+              </a>
+            </div>
+          </div>
+
+          <div class="relative hero-image">
+            <div class="aspect-square rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-700 opacity-10 absolute inset-0"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Produtos em Destaque -->
+    {
+      featured_products.length > 0 && (
+        <section class="section bg-gray-50 products-section">
+          <div class="container">
+            <div class="text-center mb-12">
+              <h2 class="text-3xl md:text-4xl font-display font-bold text-gray-900">
+                Produtos em Destaque
+              </h2>
+              <p class="text-gray-600 mt-4">Nossos brindes mais populares</p>
+            </div>
+
+            <div class="product-grid">
+              {featured_products.map((product: any) => (
+                <div class="product-card-wrapper">
+                  <ProductCard product={product} client:visible />
+                </div>
+              ))}
+            </div>
+
+            <div class="text-center mt-12">
+              <a href="/loja" class="btn btn-primary btn-lg">Ver Todos os Produtos</a>
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    <!-- CTA -->
+    <section class="section bg-gradient-to-r from-primary-500 to-secondary-700 text-white cta-section">
+      <div class="container text-center">
+        <h2 class="text-3xl md:text-5xl font-display font-bold mb-6">Pronto para Começar?</h2>
+        <p class="text-lg md:text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+          Entre em contato e receba um orçamento personalizado.
+        </p>
+        <a
+          href={`https://wa.me/${settings.whatsapp_number || '5596981247830'}?text=Olá! Gostaria de fazer um orçamento.`}
+          target="_blank"
+          class="btn btn-lg bg-white text-primary-500 hover:bg-gray-100"
+        >
+          Solicitar Orçamento
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer client:load />
+
+  <script>
+    // @ts-ignore
+    gsap.registerPlugin(ScrollTrigger);
+
+    // @ts-ignore
+    gsap.from('.hero-text', {
+      opacity: 0,
+      y: 50,
+      duration: 1,
+      ease: 'power3.out',
+    });
+
+    // @ts-ignore
+    gsap.from('.hero-image', {
+      opacity: 0,
+      x: 50,
+      duration: 1,
+      delay: 0.3,
+      ease: 'power3.out',
+    });
+
+    // @ts-ignore
+    gsap.from('.product-card-wrapper', {
+      scrollTrigger: {
+        trigger: '.products-section',
+        start: 'top 80%',
+      },
+      opacity: 0,
+      y: 40,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: 'power2.out',
+    });
+  </script>
 </Layout>

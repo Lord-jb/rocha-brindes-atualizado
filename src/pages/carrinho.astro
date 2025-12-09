@@ -1,0 +1,74 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import CartItems from '@/components/CartItems';
+import CartSummary from '@/components/CartSummary';
+
+const title = 'Carrinho de Compras - Rocha Brindes';
+const description = 'Revise seus produtos e finalize seu pedido de brindes personalizados.';
+---
+
+<Layout title={title} description={description}>
+  <Header client:load />
+
+  <main class="flex-1 py-8 md:py-12">
+    <div class="container mx-auto px-4">
+
+      <!-- Page Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-2">
+          Carrinho de Compras
+        </h1>
+        <p class="text-gray-600">
+          Revise seus produtos antes de finalizar o pedido
+        </p>
+      </div>
+
+      <!-- Cart Content -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Cart Items -->
+        <div class="lg:col-span-2">
+          <CartItems client:load />
+        </div>
+
+        <!-- Cart Summary -->
+        <div class="lg:col-span-1">
+          <CartSummary client:load />
+        </div>
+      </div>
+
+      <!-- Continue Shopping -->
+      <div class="mt-8 text-center">
+        <a href="/loja" class="inline-flex items-center gap-2 text-primary-500 hover:text-primary-600 font-medium transition-colors">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Continuar Comprando
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <Footer client:load />
+
+  <script>
+    // Animate cart on load
+    if (typeof gsap !== 'undefined') {
+      gsap.from('.cart-items-wrapper', {
+        opacity: 0,
+        x: -30,
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+
+      gsap.from('.cart-summary-wrapper', {
+        opacity: 0,
+        x: 30,
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+    }
+  </script>
+</Layout>

@@ -1,0 +1,34 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import AdminCategoriesList from '@/components/AdminCategoriesList';
+
+// Fetch categories
+const categoriesUrl = new URL('/api/categories', Astro.url.origin);
+let categories = [];
+
+try {
+  const categoriesResponse = await fetch(categoriesUrl.toString());
+  if (categoriesResponse.ok) {
+    categories = await categoriesResponse.json();
+  }
+} catch (error) {
+  console.error('Failed to fetch categories:', error);
+}
+---
+
+<AdminLayout title="Categorias - Admin">
+  <!-- Page Header -->
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-3xl font-display font-bold text-gray-900 mb-2">
+        Categorias
+      </h1>
+      <p class="text-gray-600">
+        Gerencie as categorias de produtos
+      </p>
+    </div>
+  </div>
+
+  <!-- Categories List -->
+  <AdminCategoriesList client:load categories={categories} />
+</AdminLayout>

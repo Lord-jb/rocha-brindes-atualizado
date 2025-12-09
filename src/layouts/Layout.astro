@@ -1,16 +1,18 @@
 ---
-import "../styles/global.css";
+import '@/styles/global.css';
 
 interface Props {
   title?: string;
   description?: string;
   image?: string;
+  noIndex?: boolean;
 }
 
 const {
-  title = "Rocha Brindes | Brindes Corporativos, Kits Executivos e Personalizados",
-  description = "Fabricante e fornecedor de brindes personalizados para empresas. Orçamento rápido em Canetas, Garrafas Térmicas, Agendas, Bonés e Kits Boas-Vindas. Atendemos todo o Brasil.",
-  image = "/favicon-light.png"
+  title = 'Rocha Brindes - Brindes Personalizados de Alta Qualidade',
+  description = 'Especialistas em brindes personalizados para empresas e eventos. Qualidade, preço justo e entrega rápida.',
+  image = '/og-image.jpg',
+  noIndex = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -21,30 +23,51 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta name="keywords" content="brindes corporativos, brindes personalizados, kits executivos, canetas personalizadas, garrafas térmicas, brindes para empresas, atacado, rocha brindes" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonicalURL} />
+    {noIndex && <meta name="robots" content="noindex,nofollow" />}
 
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-light.png" />
+    <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
-    
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <meta
+      name="keywords"
+      content="brindes personalizados, brindes corporativos, brindes para empresas, brindes promocionais, rocha brindes"
+    />
+
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:image" content={new URL(image, Astro.url)} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
 
+    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={canonicalURL} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={new URL(image, Astro.url)} />
+    <meta property="twitter:image" content={new URL(image, Astro.site)} />
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#F97316" />
   </head>
-  <body class="antialiased bg-[#F8F9FA] text-[#1A1A2E] font-[Inter]">
+  <body class="min-h-screen flex flex-col bg-white">
     <slot />
+
+    <!-- GSAP -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   </body>
 </html>

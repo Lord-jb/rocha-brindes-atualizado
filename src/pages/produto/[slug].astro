@@ -1,0 +1,141 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import ProductCard from '@/components/ProductCard';
+import ProductGallery from '@/components/ProductGallery';
+import ProductDetails from '@/components/ProductDetails';
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect('/loja');
+}
+
+// Fetch product
+const productUrl = new URL(`/api/products/${slug}`, Astro.url.origin);
+const productResponse = await fetch(productUrl.toString());
+
+if (!productResponse.ok) {
+  return Astro.redirect('/loja');
+}
+
+const product = await productResponse.json();
+
+// Fetch related products (same categories)
+let relatedProducts = [];
+if (product.categories && product.categories.length > 0) {
+  const relatedUrl = new URL('/api/products', Astro.url.origin);
+  relatedUrl.searchParams.set('category', product.categories[0].slug);
+  relatedUrl.searchParams.set('limit', '4');
+
+  const relatedResponse = await fetch(relatedUrl.toString());
+  if (relatedResponse.ok) {
+    const relatedData = await relatedResponse.json();
+    relatedProducts = relatedData.products.filter((p: any) => p.id !== product.id);
+  }
+}
+
+const title = `${product.name} - Rocha Brindes`;
+const description = product.description || `Confira ${product.name} - brindes personalizados de alta qualidade para sua empresa.`;
+---
+
+<Layout title={title} description={description}>
+  <Header client:load />
+
+  <main class="flex-1 py-8 md:py-12">
+    <div class="container mx-auto px-4">
+
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm text-gray-600 mb-6">
+        <a href="/" class="hover:text-primary-500 transition-colors">Início</a>
+        <span>/</span>
+        <a href="/loja" class="hover:text-primary-500 transition-colors">Loja</a>
+        {product.categories && product.categories.length > 0 && (
+          <>
+            <span>/</span>
+            <a
+              href={`/loja?category=${product.categories[0].slug}`}
+              class="hover:text-primary-500 transition-colors"
+            >
+              {product.categories[0].name}
+            </a>
+          </>
+        )}
+        <span>/</span>
+        <span class="text-gray-900 font-medium">{product.name}</span>
+      </nav>
+
+      <!-- Product Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-16">
+
+        <!-- Gallery -->
+        <div class="product-gallery-wrapper">
+          <ProductGallery
+            client:load
+            mainImage={product.main_image_url}
+            images={product.images || []}
+            productName={product.name}
+          />
+        </div>
+
+        <!-- Details -->
+        <div class="product-details-wrapper">
+          <ProductDetails
+            client:load
+            product={product}
+          />
+        </div>
+      </div>
+
+      <!-- Related Products -->
+      {relatedProducts.length > 0 && (
+        <section class="related-products-section">
+          <h2 class="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-6">
+            Produtos Relacionados
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {relatedProducts.map((relatedProduct: any) => (
+              <div class="related-product-item">
+                <ProductCard client:visible product={relatedProduct} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  </main>
+
+  <Footer client:load />
+
+  <script>
+    // Animate product sections on load
+    if (typeof gsap !== 'undefined') {
+      gsap.from('.product-gallery-wrapper', {
+        opacity: 0,
+        x: -50,
+        duration: 0.8,
+        ease: 'power2.out'
+      });
+
+      gsap.from('.product-details-wrapper', {
+        opacity: 0,
+        x: 50,
+        duration: 0.8,
+        ease: 'power2.out'
+      });
+
+      gsap.from('.related-product-item', {
+        scrollTrigger: {
+          trigger: '.related-products-section',
+          start: 'top 80%'
+        },
+        opacity: 0,
+        y: 30,
+        stagger: 0.1,
+        duration: 0.5,
+        ease: 'power2.out'
+      });
+    }
+  </script>
+</Layout>

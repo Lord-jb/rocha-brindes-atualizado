@@ -1,0 +1,79 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import CheckoutForm from '@/components/CheckoutForm';
+
+const title = 'Finalizar Pedido - Rocha Brindes';
+const description = 'Complete suas informações para finalizar o pedido de brindes personalizados.';
+---
+
+<Layout title={title} description={description}>
+  <Header client:load />
+
+  <main class="flex-1 py-8 md:py-12 bg-gray-50">
+    <div class="container mx-auto px-4">
+
+      <!-- Page Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-2">
+          Finalizar Pedido
+        </h1>
+        <p class="text-gray-600">
+          Preencha suas informações para concluir o pedido
+        </p>
+      </div>
+
+      <!-- Checkout Steps -->
+      <div class="mb-8">
+        <div class="flex items-center justify-center gap-4 max-w-2xl mx-auto">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-semibold">
+              ✓
+            </div>
+            <span class="text-sm font-medium text-gray-900 hidden sm:inline">Carrinho</span>
+          </div>
+          <div class="flex-1 h-1 bg-primary-500"></div>
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-primary-500 text-white flex items-center justify-center font-semibold">
+              2
+            </div>
+            <span class="text-sm font-medium text-gray-900 hidden sm:inline">Dados</span>
+          </div>
+          <div class="flex-1 h-1 bg-gray-300"></div>
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-semibold">
+              3
+            </div>
+            <span class="text-sm font-medium text-gray-600 hidden sm:inline">Confirmação</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checkout Form -->
+      <CheckoutForm client:load />
+    </div>
+  </main>
+
+  <Footer client:load />
+
+  <script>
+    // Animate checkout on load
+    if (typeof gsap !== 'undefined') {
+      gsap.from('.checkout-form-wrapper', {
+        opacity: 0,
+        y: 30,
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+
+      gsap.from('.checkout-summary-wrapper', {
+        opacity: 0,
+        y: 30,
+        duration: 0.6,
+        delay: 0.2,
+        ease: 'power2.out'
+      });
+    }
+  </script>
+</Layout>

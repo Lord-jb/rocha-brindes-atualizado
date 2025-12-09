@@ -1,0 +1,33 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import AdminOrdersList from '@/components/AdminOrdersList';
+
+// Fetch orders
+const ordersUrl = new URL('/api/orders?limit=100', Astro.url.origin);
+let orders = [];
+
+try {
+  const ordersResponse = await fetch(ordersUrl.toString());
+  if (ordersResponse.ok) {
+    const data = await ordersResponse.json();
+    orders = data.orders || [];
+  }
+} catch (error) {
+  console.error('Failed to fetch orders:', error);
+}
+---
+
+<AdminLayout title="Pedidos - Admin">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-display font-bold text-gray-900 mb-2">
+      Pedidos
+    </h1>
+    <p class="text-gray-600">
+      Gerencie todos os pedidos do e-commerce
+    </p>
+  </div>
+
+  <!-- Orders List -->
+  <AdminOrdersList client:load orders={orders} />
+</AdminLayout>

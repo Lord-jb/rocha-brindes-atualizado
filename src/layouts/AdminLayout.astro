@@ -1,0 +1,48 @@
+---
+import AdminSidebar from '@/components/AdminSidebar';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'Admin - Rocha Brindes', description = 'Painel administrativo' } = Astro.props;
+
+// Simple auth check (in production, use proper session management)
+// For now, we'll skip auth to focus on functionality
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
+  </head>
+
+  <body class="min-h-screen flex bg-gray-50">
+    <!-- Sidebar -->
+    <AdminSidebar client:load />
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-h-screen ml-0 lg:ml-64">
+      <main class="flex-1 p-4 md:p-8">
+        <slot />
+      </main>
+
+      <!-- Admin Footer -->
+      <footer class="bg-white border-t border-gray-200 py-4 px-8">
+        <p class="text-sm text-gray-600 text-center">
+          © 2024 Rocha Brindes - Painel Administrativo
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
