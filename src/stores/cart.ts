@@ -46,17 +46,17 @@ export function addToCart(item: Omit<CartItem, 'quantity'> & { quantity?: number
 
   // Verificar se o item já existe
   const existingIndex = cart.items.findIndex(
-    (i) =>
+    (i: CartItem) =>
       i.product_id === item.product_id &&
       i.variation_id === item.variation_id
   );
 
   if (existingIndex !== -1) {
     // Atualizar quantidade
-    setCart('items', existingIndex, 'quantity', (q) => q + quantity);
+    setCart('items', existingIndex, 'quantity', (q: number) => q + quantity);
   } else {
     // Adicionar novo item
-    setCart('items', (items) => [
+    setCart('items', (items: CartItem[]) => [
       ...items,
       {
         ...item,
@@ -73,9 +73,9 @@ export function addToCart(item: Omit<CartItem, 'quantity'> & { quantity?: number
  * Remover item do carrinho
  */
 export function removeFromCart(productId: string, variationId: string | null = null) {
-  setCart('items', (items) =>
+  setCart('items', (items: CartItem[]) =>
     items.filter(
-      (item) =>
+      (item: CartItem) =>
         !(item.product_id === productId && item.variation_id === variationId)
     )
   );
@@ -98,7 +98,7 @@ export function updateQuantity(
   }
 
   const index = cart.items.findIndex(
-    (item) =>
+    (item: CartItem) =>
       item.product_id === productId && item.variation_id === variationId
   );
 
@@ -114,7 +114,7 @@ export function updateQuantity(
  */
 export function incrementQuantity(productId: string, variationId: string | null = null) {
   const item = cart.items.find(
-    (item) =>
+    (item: CartItem) =>
       item.product_id === productId && item.variation_id === variationId
   );
 
@@ -128,7 +128,7 @@ export function incrementQuantity(productId: string, variationId: string | null 
  */
 export function decrementQuantity(productId: string, variationId: string | null = null) {
   const item = cart.items.find(
-    (item) =>
+    (item: CartItem) =>
       item.product_id === productId && item.variation_id === variationId
   );
 
@@ -150,7 +150,7 @@ export function clearCart() {
  */
 export function getCartItem(productId: string, variationId: string | null = null): CartItem | undefined {
   return cart.items.find(
-    (item) =>
+    (item: CartItem) =>
       item.product_id === productId && item.variation_id === variationId
   );
 }
@@ -160,7 +160,7 @@ export function getCartItem(productId: string, variationId: string | null = null
  */
 export function isInCart(productId: string, variationId: string | null = null): boolean {
   return cart.items.some(
-    (item) =>
+    (item: CartItem) =>
       item.product_id === productId && item.variation_id === variationId
   );
 }
@@ -181,9 +181,9 @@ export function getItemQuantity(productId: string, variationId: string | null = 
  * Recalcular totais
  */
 function recalculateTotals() {
-  const total_items = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+  const total_items = cart.items.reduce((sum: number, item: CartItem) => sum + item.quantity, 0);
   const total_amount = cart.items.reduce(
-    (sum, item) => sum + item.unit_price * item.quantity,
+    (sum: number, item: CartItem) => sum + item.unit_price * item.quantity,
     0
   );
 
