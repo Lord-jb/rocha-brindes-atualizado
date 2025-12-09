@@ -3,43 +3,56 @@ name = "rocha-brindes"
 compatibility_date = "2024-12-05"
 pages_build_output_dir = "./dist"
 
-# D1 Database Bindings
+# ==========================================
+# CLOUDFLARE D1 DATABASE
+# ==========================================
 [[d1_databases]]
 binding = "DB"
 database_name = "rocha-brindes-db"
-database_id = "your-database-id" # Será preenchido após criar o banco
+database_id = "" # Preencher após criar: wrangler d1 create rocha-brindes-db
 
-# R2 Bucket Bindings
+# ==========================================
+# CLOUDFLARE R2 STORAGE (IMAGENS)
+# ==========================================
 [[r2_buckets]]
-binding = "IMAGES"
+binding = "R2"
 bucket_name = "rocha-brindes-images"
+preview_bucket_name = "rocha-brindes-images-dev"
 
-# KV Namespaces (para cache e sessões)
+# ==========================================
+# CLOUDFLARE KV (CACHE E SESSÕES)
+# ==========================================
 [[kv_namespaces]]
 binding = "CACHE"
-id = "your-kv-id"
+id = "" # Preencher após criar: wrangler kv:namespace create CACHE
+preview_id = "" # Para desenvolvimento
 
 [[kv_namespaces]]
 binding = "SESSIONS"
-id = "your-sessions-kv-id"
+id = "" # Preencher após criar: wrangler kv:namespace create SESSIONS
+preview_id = "" # Para desenvolvimento
 
-# Environment Variables
+# ==========================================
+# VARIÁVEIS DE AMBIENTE
+# ==========================================
 [vars]
 ENVIRONMENT = "production"
-CLOUDFLARE_ACCOUNT_HASH = "iem94FVEkj3Qjv3DsJXpbQ"
+BASE_URL = "https://rochabrindes.com.br"
+WHATSAPP_NUMBER = "5596981247830"
+ADMIN_EMAIL = "rochabrindes29@gmail.com"
 
-# Workers Routes (para API)
-[routes]
-pattern = "/api/*"
-custom_domain = true
-
-# Build configuration
+# ==========================================
+# CONFIGURAÇÃO DE BUILD
+# ==========================================
 [build]
 command = "npm run build"
 
 [build.upload]
 format = "service-worker"
 
-# Development
+# ==========================================
+# CONFIGURAÇÃO DE DESENVOLVIMENTO
+# ==========================================
 [dev]
-port = 8787
+port = 8788
+local_protocol = "http"

@@ -1,15 +1,21 @@
 {
-  "name": "rocha-brindes-astro-solid",
+  "name": "rocha-brindes-ecommerce",
   "type": "module",
   "version": "2.0.0",
+  "description": "E-commerce de brindes personalizados com Astro + SolidJS + Cloudflare",
   "scripts": {
     "dev": "astro dev --host",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "pages:dev": "wrangler pages dev dist",
+    "pages:dev": "wrangler pages dev dist --compatibility-date=2024-12-05",
     "pages:deploy": "npm run build && wrangler pages deploy dist",
+    "db:create": "wrangler d1 create rocha-brindes-db",
     "db:init": "wrangler d1 execute rocha-brindes-db --file=./schema.sql",
-    "db:migrate": "wrangler d1 execute rocha-brindes-db --file=./schema.sql"
+    "db:seed": "wrangler d1 execute rocha-brindes-db --file=./seed.sql",
+    "db:reset": "npm run db:init && npm run db:seed",
+    "kv:create:cache": "wrangler kv:namespace create CACHE",
+    "kv:create:sessions": "wrangler kv:namespace create SESSIONS",
+    "r2:create": "wrangler r2 bucket create rocha-brindes-images"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -19,14 +25,17 @@
     "@astrojs/tailwind": "^6.0.2",
     "@solidjs/router": "^0.14.0",
     "@tanstack/solid-query": "^5.56.0",
-    "jszip": "^3.10.1",
+    "clsx": "^2.1.1",
+    "gsap": "^3.12.5",
     "lucide-solid": "^0.456.0",
     "solid-js": "^1.9.0",
+    "tailwind-merge": "^2.5.5",
     "tailwindcss": "^3.4.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241127.0",
     "astro": "^5.16.0",
+    "terser": "^5.44.1",
     "typescript": "^5.7.2",
     "wrangler": "^3.87.0"
   }

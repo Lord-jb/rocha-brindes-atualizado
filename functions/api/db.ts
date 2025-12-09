@@ -29,11 +29,11 @@ export async function getProducts(env: Env, limit = 100, offset = 0): Promise<Pr
       categorias: row.categoria_ids ? row.categoria_ids.split(',') : [],
       imagens_urls: row.imagem_urls ? row.imagem_urls.split(',').filter(Boolean) : [],
       thumbs_urls: row.thumb_urls ? row.thumb_urls.split(',').filter(Boolean) : [],
-      variacoes,
+      variacoes: variacoes as any,
       created_at: row.created_at,
       updated_at: row.updated_at,
     };
-  }));
+  })) as Promise<Product[]>;
 }
 
 export async function getProductById(env: Env, id: string): Promise<Product | null> {
@@ -56,10 +56,10 @@ export async function getProductById(env: Env, id: string): Promise<Product | nu
     imagem_url: row.imagem_url,
     thumb_url: row.thumb_url,
     destaque: Boolean(row.destaque),
-    categorias: categorias.map(c => c.id),
-    imagens_urls: imagens.map(i => i.imagem_url),
-    thumbs_urls: imagens.map(i => i.thumb_url).filter(Boolean),
-    variacoes,
+    categorias: categorias.map((c: any) => c.id as string),
+    imagens_urls: imagens.map((i: any) => i.imagem_url as string),
+    thumbs_urls: imagens.map((i: any) => i.thumb_url as string).filter(Boolean),
+    variacoes: variacoes as any,
     created_at: row.created_at,
     updated_at: row.updated_at,
   };
