@@ -95,15 +95,23 @@ export default function CheckoutForm() {
         throw new Error('Erro ao criar pedido');
       }
 
-      const order = await response.json();
+      const order = await response.json() as { order_number: string; id: string };
 
       // Generate WhatsApp message
       const whatsappNumber = '5596981247830'; // From wrangler.toml
+      const trackingUrl = `${window.location.origin}/pedido/${order.order_number}`;
+      const items = cart.items.map(item => ({
+        name: item.product_name,
+        quantity: item.quantity,
+        price: item.unit_price * item.quantity
+      }));
+
       const message = generateCheckoutWhatsAppMessage(
-        formData(),
-        cart.items,
+        order.order_number,
+        formData().name,
+        items,
         cartTotal(),
-        order.order_number
+        trackingUrl
       );
       const whatsappLink = generateWhatsAppLink(whatsappNumber, message);
 
