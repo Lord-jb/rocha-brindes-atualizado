@@ -1,0 +1,41 @@
+---
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import AdminProductsList from '@/components/AdminProductsList';
+
+// Fetch products
+const productsUrl = new URL('/api/products?limit=100', Astro.url.origin);
+let products = [];
+
+try {
+  const productsResponse = await fetch(productsUrl.toString());
+  if (productsResponse.ok) {
+    const data = await productsResponse.json();
+    products = data.products || [];
+  }
+} catch (error) {
+  console.error('Failed to fetch products:', error);
+}
+---
+
+<AdminLayout title="Produtos - Admin">
+  <!-- Page Header -->
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-3xl font-display font-bold text-gray-900 mb-2">
+        Produtos
+      </h1>
+      <p class="text-gray-600">
+        Gerencie o catálogo de produtos
+      </p>
+    </div>
+    <a href="/admin/produtos/novo" class="btn-primary">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Novo Produto
+    </a>
+  </div>
+
+  <!-- Products List -->
+  <AdminProductsList client:load products={products} />
+</AdminLayout>
