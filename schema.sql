@@ -1,130 +1,163 @@
--- Schema D1 para Rocha Brindes
--- Database: rocha-brindes-db
+-- ==========================================
+-- ROCHA BRINDES - DATABASE SCHEMA
+-- Cloudflare D1 (SQLite)
+-- E-commerce de Brindes Personalizados
+-- ==========================================
 
--- Tabela de produtos
-CREATE TABLE IF NOT EXISTS produtos (
+-- ==========================================
+-- TABELAS PRINCIPAIS
+-- ==========================================
+
+-- Tabela de Categorias
+CREATE TABLE IF NOT EXISTS categories (
   id TEXT PRIMARY KEY,
-  nome TEXT NOT NULL,
-  descricao TEXT,
-  cor TEXT,
-  imagem_url TEXT NOT NULL,
-  thumb_url TEXT,
-  destaque INTEGER DEFAULT 0,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  image_url TEXT,
+  popular INTEGER DEFAULT 0,
+  product_count INTEGER DEFAULT 0,
+  order_index INTEGER DEFAULT 0,
   created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL
 );
 
--- Índices para produtos
-CREATE INDEX IF NOT EXISTS idx_produtos_destaque ON produtos(destaque);
-CREATE INDEX IF NOT EXISTS idx_produtos_created_at ON produtos(created_at DESC);
-
--- Tabela de categorias
-CREATE TABLE IF NOT EXISTS categorias (
+-- Tabela de Produtos
+CREATE TABLE IF NOT EXISTS products (
   id TEXT PRIMARY KEY,
-  nome TEXT NOT NULL UNIQUE,
-  image_path TEXT,
-  popular INTEGER DEFAULT 0,
-  descricao TEXT,
-  video_url TEXT,
-  ordem INTEGER DEFAULT 0
-);
-
-CREATE INDEX IF NOT EXISTS idx_categorias_popular ON categorias(popular);
-CREATE INDEX IF NOT EXISTS idx_categorias_ordem ON categorias(ordem);
-
--- Tabela de relação produto-categoria (many-to-many)
-CREATE TABLE IF NOT EXISTS produto_categorias (
-  produto_id TEXT NOT NULL,
-  categoria_id TEXT NOT NULL,
-  PRIMARY KEY (produto_id, categoria_id),
-  FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE,
-  FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE CASCADE
-);
-
-CREATE INDEX IF NOT EXISTS idx_produto_categorias_produto ON produto_categorias(produto_id);
-CREATE INDEX IF NOT EXISTS idx_produto_categorias_categoria ON produto_categorias(categoria_id);
-
--- Tabela de imagens de produtos
-CREATE TABLE IF NOT EXISTS produto_imagens (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  produto_id TEXT NOT NULL,
-  imagem_url TEXT NOT NULL,
-  thumb_url TEXT,
-  ordem INTEGER DEFAULT 0,
-  FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE
-);
-
-CREATE INDEX IF NOT EXISTS idx_produto_imagens_produto ON produto_imagens(produto_id);
-CREATE INDEX IF NOT EXISTS idx_produto_imagens_ordem ON produto_imagens(ordem);
-
--- Tabela de variações de produtos (cores)
-CREATE TABLE IF NOT EXISTS produto_variacoes (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  produto_id TEXT NOT NULL,
-  cor TEXT NOT NULL,
-  imagem_url TEXT NOT NULL,
-  thumb_url TEXT,
-  FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE
-);
-
-CREATE INDEX IF NOT EXISTS idx_produto_variacoes_produto ON produto_variacoes(produto_id);
-
--- Tabela de configuração do layout
-CREATE TABLE IF NOT EXISTS layout_config (
-  id TEXT PRIMARY KEY DEFAULT 'default',
-  logo TEXT,
-  whatsapp TEXT,
-  company_info_title TEXT,
-  company_info_description TEXT,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  price REAL DEFAULT 0,
+  featured INTEGER DEFAULT 0,
+  active INTEGER DEFAULT 1,
+  main_image_url TEXT,
+  main_thumb_url TEXT,
+  created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL
 );
 
--- Tabela de banners
+-- Tabela de Relacionamento Produto-Categoria (N:N)
+CREATE TABLE IF NOT EXISTS product_categories (
+  product_id TEXT NOT NULL,
+  category_id TEXT NOT NULL,
+  PRIMARY KEY (product_id, category_id),
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+  FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+);
+
+-- Tabela de Imagens de Produtos
+CREATE TABLE IF NOT EXISTS product_images (
+  id TEXT PRIMARY KEY,
+  product_id TEXT NOT NULL,
+  image_url TEXT NOT NULL,
+  thumb_url TEXT,
+  order_index INTEGER DEFAULT 0,
+  alt_text TEXT,
+  created_at INTEGER NOT NULL,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- Tabela de Variações de Produtos (cores, tamanhos, etc.)
+CREATE TABLE IF NOT EXISTS product_variations (
+  id TEXT PRIMARY KEY,
+  product_id TEXT NOT NULL,
+  color TEXT,
+  size TEXT,
+  sku TEXT,
+  image_url TEXT,
+  thumb_url TEXT,
+  price_modifier REAL DEFAULT 0,
+  stock INTEGER DEFAULT 0,
+  created_at INTEGER NOT NULL,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- Tabela de Pedidos
+CREATE TABLE IF NOT EXISTS orders (
+  id TEXT PRIMARY KEY,
+  order_number TEXT UNIQUE NOT NULL,
+  customer_name TEXT NOT NULL,
+  customer_email TEXT,
+  customer_whatsapp TEXT NOT NULL,
+  customer_address TEXT,
+  notes TEXT,
+  status TEXT DEFAULT 'pending',
+  total_amount REAL DEFAULT 0,
+  items_count INTEGER DEFAULT 0,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL,
+  completed_at INTEGER
+);
+
+-- Tabela de Itens de Pedido
+CREATE TABLE IF NOT EXISTS order_items (
+  id TEXT PRIMARY KEY,
+  order_id TEXT NOT NULL,
+  product_id TEXT NOT NULL,
+  product_name TEXT NOT NULL,
+  product_image TEXT,
+  variation_id TEXT,
+  variation_color TEXT,
+  quantity INTEGER NOT NULL,
+  unit_price REAL NOT NULL,
+  subtotal REAL NOT NULL,
+  created_at INTEGER NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
+);
+
+-- Tabela de Configurações do Site
+CREATE TABLE IF NOT EXISTS settings (
+  id TEXT PRIMARY KEY DEFAULT 'main',
+  company_name TEXT DEFAULT 'Rocha Brindes',
+  description TEXT,
+  address TEXT,
+  phone TEXT,
+  email TEXT,
+  whatsapp_number TEXT,
+  instagram_url TEXT,
+  facebook_url TEXT,
+  linkedin_url TEXT,
+  youtube_url TEXT,
+  business_hours TEXT,
+  cnpj TEXT,
+  copyright TEXT,
+  logo_url TEXT,
+  favicon_url TEXT,
+  primary_color TEXT DEFAULT '#F97316',
+  secondary_color TEXT DEFAULT '#7C3AED',
+  meta_title TEXT,
+  meta_description TEXT,
+  updated_at INTEGER NOT NULL
+);
+
+-- Tabela de Banners/Slides da Home
 CREATE TABLE IF NOT EXISTS banners (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  url TEXT NOT NULL,
-  alt TEXT,
-  ordem INTEGER DEFAULT 0,
-  ativo INTEGER DEFAULT 1
+  id TEXT PRIMARY KEY,
+  title TEXT,
+  subtitle TEXT,
+  image_url TEXT NOT NULL,
+  link_url TEXT,
+  cta_text TEXT,
+  order_index INTEGER DEFAULT 0,
+  active INTEGER DEFAULT 1,
+  created_at INTEGER NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_banners_ordem ON banners(ordem);
-CREATE INDEX IF NOT EXISTS idx_banners_ativo ON banners(ativo);
-
--- Tabela de promoções
-CREATE TABLE IF NOT EXISTS promocoes (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  imagem_url TEXT NOT NULL,
-  ordem INTEGER DEFAULT 0,
-  ativo INTEGER DEFAULT 1
-);
-
-CREATE INDEX IF NOT EXISTS idx_promocoes_ordem ON promocoes(ordem);
-CREATE INDEX IF NOT EXISTS idx_promocoes_ativo ON promocoes(ativo);
-
--- Tabela de popups
-CREATE TABLE IF NOT EXISTS popups (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  imagem_url TEXT NOT NULL,
-  ordem INTEGER DEFAULT 0,
-  ativo INTEGER DEFAULT 1
-);
-
-CREATE INDEX IF NOT EXISTS idx_popups_ordem ON popups(ordem);
-CREATE INDEX IF NOT EXISTS idx_popups_ativo ON popups(ativo);
-
--- Tabela de usuários admin
+-- Tabela de Usuários Admin
 CREATE TABLE IF NOT EXISTS users (
   id TEXT PRIMARY KEY,
   email TEXT NOT NULL UNIQUE,
   name TEXT,
+  password_hash TEXT NOT NULL,
   role TEXT DEFAULT 'admin',
-  created_at INTEGER NOT NULL
+  active INTEGER DEFAULT 1,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-
--- Tabela de sessões
+-- Tabela de Sessões
 CREATE TABLE IF NOT EXISTS sessions (
   id TEXT PRIMARY KEY,
   user_id TEXT NOT NULL,
@@ -133,9 +166,90 @@ CREATE TABLE IF NOT EXISTS sessions (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- ==========================================
+-- ÍNDICES PARA PERFORMANCE
+-- ==========================================
+
+-- Produtos
+CREATE INDEX IF NOT EXISTS idx_products_slug ON products(slug);
+CREATE INDEX IF NOT EXISTS idx_products_featured ON products(featured);
+CREATE INDEX IF NOT EXISTS idx_products_active ON products(active);
+CREATE INDEX IF NOT EXISTS idx_products_created_at ON products(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_products_price ON products(price);
+
+-- Categorias
+CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);
+CREATE INDEX IF NOT EXISTS idx_categories_popular ON categories(popular);
+CREATE INDEX IF NOT EXISTS idx_categories_order ON categories(order_index);
+
+-- Relacionamentos
+CREATE INDEX IF NOT EXISTS idx_product_categories_product ON product_categories(product_id);
+CREATE INDEX IF NOT EXISTS idx_product_categories_category ON product_categories(category_id);
+
+-- Imagens
+CREATE INDEX IF NOT EXISTS idx_product_images_product ON product_images(product_id);
+CREATE INDEX IF NOT EXISTS idx_product_images_order ON product_images(order_index);
+
+-- Variações
+CREATE INDEX IF NOT EXISTS idx_product_variations_product ON product_variations(product_id);
+CREATE INDEX IF NOT EXISTS idx_product_variations_sku ON product_variations(sku);
+
+-- Pedidos
+CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
+CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_orders_order_number ON orders(order_number);
+CREATE INDEX IF NOT EXISTS idx_orders_customer_whatsapp ON orders(customer_whatsapp);
+
+-- Itens de Pedido
+CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_product ON order_items(product_id);
+
+-- Usuários e Sessões
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at);
 
--- Inserir configuração padrão
-INSERT OR IGNORE INTO layout_config (id, logo, whatsapp, company_info_description, updated_at)
-VALUES ('default', '', '+5589994333316', 'Especialista em brindes personalizados', strftime('%s', 'now'));
+-- Banners
+CREATE INDEX IF NOT EXISTS idx_banners_active ON banners(active);
+CREATE INDEX IF NOT EXISTS idx_banners_order ON banners(order_index);
+
+-- ==========================================
+-- DADOS INICIAIS
+-- ==========================================
+
+-- Configurações do Site
+INSERT OR REPLACE INTO settings (
+  id,
+  company_name,
+  description,
+  address,
+  phone,
+  email,
+  whatsapp_number,
+  instagram_url,
+  facebook_url,
+  business_hours,
+  copyright,
+  primary_color,
+  secondary_color,
+  meta_title,
+  meta_description,
+  updated_at
+) VALUES (
+  'main',
+  'Rocha Brindes',
+  'Especialistas em brindes personalizados de alta qualidade para empresas e eventos. Oferecemos uma ampla variedade de produtos promocionais com personalização profissional.',
+  'Rua Doutor Bento Teobaldo Ferraz 330, Bairro Novo Horizonte, Macapá - AP',
+  '(96) 8124-7830',
+  'rochabrindes29@gmail.com',
+  '5596981247830',
+  'https://www.instagram.com/rochabrindesoficial',
+  'https://www.facebook.com/profile.php?id=61576684446307',
+  'Segunda a Sexta: 09:00–18:00 | Sábado: 09:00–13:00',
+  '© 2025 Rocha Brindes. Todos os direitos reservados.',
+  '#F97316',
+  '#7C3AED',
+  'Rocha Brindes - Brindes Personalizados de Alta Qualidade',
+  'Especialistas em brindes personalizados para empresas e eventos. Qualidade, preço justo e entrega rápida.',
+  strftime('%s', 'now')
+);

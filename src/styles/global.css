@@ -1,25 +1,23 @@
-/* FILE: src/styles/global.css - ADICIONE/ATUALIZE */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================
+   ESTILOS GLOBAIS - ROCHA BRINDES E-COMMERCE
+   ========================================== */
+
 @layer base {
   * {
-    @apply antialiased;
-  }
-  
-  body {
-    @apply bg-light text-dark;
+    @apply border-gray-200;
   }
 
   html {
-    scroll-behavior: smooth;
+    @apply scroll-smooth;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
+  body {
+    @apply bg-white text-gray-900 antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 
   /* Previne zoom ao focar em inputs no iOS */
@@ -34,102 +32,240 @@
       font-size: 16px !important;
     }
   }
+
+  /* Tipografia */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold;
+  }
+
+  h1 {@apply text-4xl md:text-5xl lg:text-6xl;}
+  h2 {@apply text-3xl md:text-4xl lg:text-5xl;}
+  h3 {@apply text-2xl md:text-3xl lg:text-4xl;}
+  h4 {@apply text-xl md:text-2xl lg:text-3xl;}
+  h5 {@apply text-lg md:text-xl lg:text-2xl;}
+  h6 {@apply text-base md:text-lg lg:text-xl;}
+
+  p {@apply leading-relaxed;}
+  a {@apply transition-colors duration-200;}
+
+  /* Inputs e forms */
+  input, textarea, select {
+    @apply w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none transition-all;
+  }
+
+  label {
+    @apply block text-sm font-medium text-gray-700 mb-1.5;
+  }
+
+  /* Scrollbar customizado */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+  }
+
+  @media (max-width: 640px) {
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+  }
+}
+
+@layer components {
+  /* BOTÕES */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-button hover:shadow-button-hover;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700;
+  }
+
+  .btn-secondary {
+    @apply btn bg-secondary-700 text-white hover:bg-secondary-800 active:bg-secondary-900;
+  }
+
+  .btn-outline {
+    @apply btn border-2 border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-500 hover:bg-primary-50;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent hover:bg-gray-100 text-gray-700 shadow-none;
+  }
+
+  .btn-sm {
+    @apply px-4 py-2 text-sm;
+  }
+
+  .btn-lg {
+    @apply px-8 py-4 text-lg;
+  }
+
+  /* CARDS */
+  .card {
+    @apply bg-white rounded-xl shadow-card overflow-hidden transition-shadow duration-200 hover:shadow-card-hover;
+  }
+
+  .card-body {
+    @apply p-6;
+  }
+
+  /* BADGES */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-primary {
+    @apply badge bg-primary-100 text-primary-800;
+  }
+
+  .badge-secondary {
+    @apply badge bg-secondary-100 text-secondary-800;
+  }
+
+  .badge-success {
+    @apply badge bg-green-100 text-green-800;
+  }
+
+  .badge-warning {
+    @apply badge bg-yellow-100 text-yellow-800;
+  }
+
+  .badge-danger {
+    @apply badge bg-red-100 text-red-800;
+  }
+
+  /* CONTAINER */
+  .container {
+    @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
+  }
+
+  .container-narrow {
+    @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl;
+  }
+
+  .container-wide {
+    @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-[1400px];
+  }
+
+  /* SEÇÕES */
+  .section {
+    @apply py-16 md:py-24;
+  }
+
+  .section-sm {
+    @apply py-8 md:py-12;
+  }
+
+  .section-lg {
+    @apply py-24 md:py-32;
+  }
+
+  /* GRID DE PRODUTOS */
+  .product-grid {
+    @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6;
+  }
+
+  .product-grid-large {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8;
+  }
+
+  /* OVERLAY E MODAL */
+  .overlay {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-40;
+  }
+
+  .modal {
+    @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+  }
+
+  .modal-content {
+    @apply bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto;
+  }
+
+  /* SKELETONS (LOADING) */
+  .skeleton {
+    @apply animate-pulse bg-gray-200 rounded;
+  }
+
+  .skeleton-text {
+    @apply skeleton h-4 w-full;
+  }
+
+  .skeleton-title {
+    @apply skeleton h-8 w-3/4;
+  }
+
+  .skeleton-image {
+    @apply skeleton aspect-square;
+  }
+
+  /* FOCUS VISIBLE */
+  .focus-ring {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2;
+  }
 }
 
 @layer utilities {
-  .break-words {
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word;
-    hyphens: auto;
+  .text-balance {
+    text-wrap: balance;
   }
 
-  .scrollbar-thin {
-    scrollbar-width: thin;
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-500 to-secondary-700 bg-clip-text text-transparent;
   }
 
-  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
-    background-color: rgb(209 213 219);
-    border-radius: 9999px;
+  .glass {
+    @apply bg-white/80 backdrop-blur-lg;
   }
 
-  .scrollbar-track-gray-100::-webkit-scrollbar-track {
-    background-color: rgb(243 244 246);
-    border-radius: 9999px;
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 
-  /* Suporte para telas muito pequenas */
-  @media (min-width: 360px) {
-    .xs\:w-14 {
-      width: 3.5rem;
-    }
-    .xs\:h-14 {
-      height: 3.5rem;
-    }
-    .xs\:w-16 {
-      width: 4rem;
-    }
-    .xs\:h-220px {
-      height: 220px;
-    }
-    .xs\:p-4 {
-      padding: 1rem;
-    }
-    .xs\:grid-cols-3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  /* Melhorias de scroll para mobile */
   .overscroll-contain {
     overscroll-behavior: contain;
   }
-  
-  .overscroll-x-contain {
-    overscroll-behavior-x: contain;
-  }
 
-  /* Touch optimization */
   .touch-manipulation {
     touch-action: manipulation;
   }
 
-  /* Scrollbar customizada mais fina para mobile */
-  @media (max-width: 640px) {
-    .scrollbar-thin::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
-    }
-  }
-
-  /* Animação do Carrossel Infinito */
-  @keyframes scroll-infinite {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
-  }
-
-  .animate-scroll-infinite {
-    animation: scroll-infinite 30s linear infinite;
-  }
-
-  .pause-animation:hover {
-    animation-play-state: paused;
-  }
-
+  /* Animações */
   .animate-slide-in {
-    animation: slide-in 0.3s ease-out;
+    animation: slideIn 0.3s ease-out;
   }
-  
-  @keyframes slide-in {
+
+  .animate-slide-in-up {
+    animation: slideInUp 0.5s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes slideIn {
     from {
       transform: translateX(100%);
       opacity: 0;
@@ -139,17 +275,51 @@
       opacity: 1;
     }
   }
-}
-/* FILE: src/styles/global.css - ADICIONE ao final */
-@keyframes slide-up {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
 
-.animate-slide-up {
-  animation: slide-up 0.3s ease-out;
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Carrossel infinito */
+  @keyframes scrollInfinite {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-scroll-infinite {
+    animation: scrollInfinite 30s linear infinite;
+  }
+
+  .pause-animation:hover {
+    animation-play-state: paused;
+  }
 }
