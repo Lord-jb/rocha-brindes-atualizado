@@ -3,18 +3,23 @@ import Layout from '@/layouts/Layout.astro';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import type { Product, Category, Settings } from '@/types';
 
 // Buscar dados do catálogo
-let featured_products = [];
-let categories = [];
-let settings = {};
+let featured_products: Product[] = [];
+let categories: Category[] = [];
+let settings: Partial<Settings> = {};
 
 try {
   const catalogUrl = new URL('/api/catalog?limit=8', Astro.url.origin);
   const response = await fetch(catalogUrl.toString());
 
   if (response.ok) {
-    const data = await response.json();
+    const data = await response.json() as {
+      featured_products: Product[];
+      categories: Category[];
+      settings: Settings | null;
+    };
     featured_products = data.featured_products || [];
     categories = data.categories || [];
     settings = data.settings || {};

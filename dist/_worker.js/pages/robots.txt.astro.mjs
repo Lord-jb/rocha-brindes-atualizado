@@ -1,5 +1,5 @@
 globalThis.process ??= {}; globalThis.process.env ??= {};
-export { renderers } from '../renderers.mjs';
+export { r as renderers } from '../chunks/_@astro-renderers_C0wH7-Ml.mjs';
 
 const GET = ({ site }) => {
   const sitemapURL = new URL("sitemap-index.xml", site);

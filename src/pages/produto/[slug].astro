@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import ProductGallery from '@/components/ProductGallery';
 import ProductDetails from '@/components/ProductDetails';
+import type { Product } from '@/types';
 
 const { slug } = Astro.params;
 
@@ -20,10 +21,10 @@ if (!productResponse.ok) {
   return Astro.redirect('/loja');
 }
 
-const product = await productResponse.json();
+const product = await productResponse.json() as Product;
 
 // Fetch related products (same categories)
-let relatedProducts = [];
+let relatedProducts: Product[] = [];
 if (product.categories && product.categories.length > 0) {
   const relatedUrl = new URL('/api/products', Astro.url.origin);
   relatedUrl.searchParams.set('category', product.categories[0].slug);
@@ -31,8 +32,8 @@ if (product.categories && product.categories.length > 0) {
 
   const relatedResponse = await fetch(relatedUrl.toString());
   if (relatedResponse.ok) {
-    const relatedData = await relatedResponse.json();
-    relatedProducts = relatedData.products.filter((p: any) => p.id !== product.id);
+    const relatedData = await relatedResponse.json() as { products: Product[], total: number };
+    relatedProducts = relatedData.products.filter((p: Product) => p.id !== product.id);
   }
 }
 

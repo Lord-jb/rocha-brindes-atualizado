@@ -1,65 +1,44 @@
 globalThis.process ??= {}; globalThis.process.env ??= {};
-import { f as createComponent, k as renderComponent, r as renderTemplate, u as unescapeHTML } from '../chunks/astro/server_Cqv084t8.mjs';
-import { $ as $$Layout } from '../chunks/Layout_ClsM8hUu.mjs';
-export { renderers } from '../renderers.mjs';
+import { e as createAstro, f as createComponent, k as renderComponent, r as renderTemplate, m as maybeRenderHead, h as addAttribute, o as renderScript } from '../chunks/astro/server_DIHz_uPh.mjs';
+import { $ as $$Layout, H as Header, F as Footer } from '../chunks/Footer_BPJeEWO3.mjs';
+import { P as ProductCard } from '../chunks/ProductCard_BBeHDls_.mjs';
+export { r as renderers } from '../chunks/_@astro-renderers_C0wH7-Ml.mjs';
 
-var __freeze = Object.freeze;
-var __defProp = Object.defineProperty;
-var __template = (cooked, raw) => __freeze(__defProp(cooked, "raw", { value: __freeze(cooked.slice()) }));
-var _a;
-const $$Index = createComponent(($$result, $$props, $$slots) => {
-  const schema = JSON.stringify({
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "@id": "https://rochabrindes.com/#organization",
-        "name": "Rocha Brindes",
-        "url": "https://rochabrindes.com",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://rochabrindes.com/favicon-light.png",
-          "width": 512,
-          "height": 512
-        },
-        "image": "https://rochabrindes.com/favicon-light.png",
-        "description": "L\xEDder em brindes personalizados corporativos. Canetas, garrafas, kits executivos e tecnologia para sua empresa.",
-        "telephone": "+55-89-99433-3316",
-        "address": {
-          "@type": "PostalAddress",
-          "addressCountry": "BR"
-        },
-        "priceRange": "$$",
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "telephone": "+55-89-99433-3316",
-          "contactType": "sales",
-          "areaServed": "BR",
-          "availableLanguage": "Portuguese"
-        },
-        "sameAs": [
-          "https://instagram.com/rochabrindes",
-          "https://facebook.com/rochabrindes"
-        ]
-      },
-      {
-        "@type": "WebSite",
-        "@id": "https://rochabrindes.com/#website",
-        "url": "https://rochabrindes.com",
-        "name": "Rocha Brindes - Cat\xE1logo Oficial",
-        "publisher": {
-          "@id": "https://rochabrindes.com/#organization"
-        },
-        "inLanguage": "pt-BR",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://rochabrindes.com/?search={search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
-      }
-    ]
-  });
-  return renderTemplate`${renderComponent($$result, "Layout", $$Layout, {}, { "default": ($$result2) => renderTemplate(_a || (_a = __template([' <script type="application/ld+json">', "<\/script> ", " "])), unescapeHTML(schema), renderComponent($$result2, "Home", null, { "client:only": "solid-js", "client:component-hydration": "only", "client:component-path": "/home/user/rocha-brindes-atualizado/src/components/Home.solid", "client:component-export": "default" })) })}`;
+const $$Astro = createAstro("https://rochabrindes.com");
+const $$Index = createComponent(async ($$result, $$props, $$slots) => {
+  const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
+  Astro2.self = $$Index;
+  let featured_products = [];
+  let categories = [];
+  let settings = {};
+  try {
+    const catalogUrl = new URL("/api/catalog?limit=8", Astro2.url.origin);
+    const response = await fetch(catalogUrl.toString());
+    if (response.ok) {
+      const data = await response.json();
+      featured_products = data.featured_products || [];
+      categories = data.categories || [];
+      settings = data.settings || {};
+    } else {
+      console.error("Failed to fetch catalog:", response.status, response.statusText);
+    }
+  } catch (error) {
+    console.error("Error fetching catalog:", error);
+  }
+  return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": settings.meta_title || "Rocha Brindes - Brindes Personalizados", "description": settings.meta_description || settings.description }, { "default": async ($$result2) => renderTemplate` ${renderComponent($$result2, "Header", Header, { "client:load": true, "client:component-hydration": "load", "client:component-path": "@/components/Header", "client:component-export": "default" })} ${maybeRenderHead()}<main class="flex-1"> <!-- Hero Section --> <section class="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-20 md:py-32"> <div class="container"> <div class="grid md:grid-cols-2 gap-12 items-center"> <div class="space-y-6 hero-text"> <h1 class="text-4xl md:text-6xl font-display font-bold text-gray-900 leading-tight">
+Brindes Personalizados de
+<span class="text-gradient">Alta Qualidade</span> </h1> <p class="text-lg md:text-xl text-gray-600 leading-relaxed">
+Impressione seus clientes com brindes únicos e personalizados. Qualidade garantida e
+              entrega rápida.
+</p> <div class="flex flex-col sm:flex-row gap-4"> <a href="/loja" class="btn btn-primary btn-lg">Ver Catálogo</a> <a${addAttribute(`https://wa.me/${settings.whatsapp_number || "5596981247830"}?text=Ol\xE1! Gostaria de fazer um or\xE7amento.`, "href")} target="_blank" class="btn btn-outline btn-lg">
+Falar no WhatsApp
+</a> </div> </div> <div class="relative hero-image"> <div class="aspect-square rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-700 opacity-10 absolute inset-0"></div> </div> </div> </div> </section> <!-- Produtos em Destaque --> ${featured_products.length > 0 && renderTemplate`<section class="section bg-gray-50 products-section"> <div class="container"> <div class="text-center mb-12"> <h2 class="text-3xl md:text-4xl font-display font-bold text-gray-900">
+Produtos em Destaque
+</h2> <p class="text-gray-600 mt-4">Nossos brindes mais populares</p> </div> <div class="product-grid"> ${featured_products.map((product) => renderTemplate`<div class="product-card-wrapper"> ${renderComponent($$result2, "ProductCard", ProductCard, { "product": product, "client:visible": true, "client:component-hydration": "visible", "client:component-path": "@/components/ProductCard", "client:component-export": "default" })} </div>`)} </div> <div class="text-center mt-12"> <a href="/loja" class="btn btn-primary btn-lg">Ver Todos os Produtos</a> </div> </div> </section>`} <!-- CTA --> <section class="section bg-gradient-to-r from-primary-500 to-secondary-700 text-white cta-section"> <div class="container text-center"> <h2 class="text-3xl md:text-5xl font-display font-bold mb-6">Pronto para Começar?</h2> <p class="text-lg md:text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+Entre em contato e receba um orçamento personalizado.
+</p> <a${addAttribute(`https://wa.me/${settings.whatsapp_number || "5596981247830"}?text=Ol\xE1! Gostaria de fazer um or\xE7amento.`, "href")} target="_blank" class="btn btn-lg bg-white text-primary-500 hover:bg-gray-100">
+Solicitar Orçamento
+</a> </div> </section> </main> ${renderComponent($$result2, "Footer", Footer, { "client:load": true, "client:component-hydration": "load", "client:component-path": "@/components/Footer", "client:component-export": "default" })} ${renderScript($$result2, "/home/user/rocha-brindes-atualizado/src/pages/index.astro?astro&type=script&index=0&lang.ts")} ` })}`;
 }, "/home/user/rocha-brindes-atualizado/src/pages/index.astro", void 0);
 
 const $$file = "/home/user/rocha-brindes-atualizado/src/pages/index.astro";

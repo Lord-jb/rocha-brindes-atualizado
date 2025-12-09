@@ -1,0 +1,1 @@
+import{I as s}from"./Icon.4pfrFdzL.js";import{b as a,h as e}from"./web.BsTFG2N9.js";var o=[["path",{d:"M7.9 20A9 9 0 1 0 4 16.1L2 22Z",key:"vv11sd"}]],r=r=>a(s,e(r,{name:"MessageCircle",iconNode:o}));export{r as m};
