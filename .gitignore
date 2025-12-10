@@ -1,6 +1,7 @@
 .astro/
 .claude/
 .wrangler/
+.config/
 node_modules/
 npm-debug.log*
 yarn-debug.log*
