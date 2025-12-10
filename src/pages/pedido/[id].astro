@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import OrderStatus from '@/components/OrderStatus';
 import { formatPrice, formatDate } from '@/lib/utils';
+import type { Order } from '@/types';
 
 const { id } = Astro.params;
 
@@ -15,11 +16,11 @@ if (!id) {
 const orderUrl = new URL(`/api/orders/${id}`, Astro.url.origin);
 const orderResponse = await fetch(orderUrl.toString());
 
-let order = null;
+let order: Order | null = null;
 let error = null;
 
 if (orderResponse.ok) {
-  order = await orderResponse.json();
+  order = await orderResponse.json() as Order;
 } else {
   error = 'Pedido não encontrado';
 }
