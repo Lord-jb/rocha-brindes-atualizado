@@ -1,1 +1,0 @@
-import{I as o}from"./Icon.4pfrFdzL.js";import{b as e,h as c}from"./web.BsTFG2N9.js";var r=[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["polyline",{points:"12 6 12 12 16 14",key:"68esgv"}]],s=s=>e(o,c(s,{name:"Clock",iconNode:r}));export{s as c};
